@@ -135,6 +135,7 @@ def test_fetch_advisory_text_non_200_raises_source_error():
 def test_parse_no_ash_advisory():
     parsed = advisories.parse_advisory_text(NO_ASH_TEXT)
     assert parsed["advisory_nr"] == "2026/105"
+    assert parsed["published_utc"] == "2026-08-18T07:54:00Z"
     assert parsed["colour_code"] == "ORANGE"
     assert parsed["has_ash_cloud_forecast"] is False
     assert "EXPLOSIVE ACTIVITY IS DECREASING" in parsed["eruption_details"]
@@ -144,6 +145,7 @@ def test_parse_no_ash_advisory():
 def test_parse_with_ash_advisory():
     parsed = advisories.parse_advisory_text(WITH_ASH_TEXT)
     assert parsed["advisory_nr"] == "2026/94"
+    assert parsed["published_utc"] == "2026-08-16T20:31:00Z"
     assert parsed["colour_code"] == "RED"
     assert parsed["has_ash_cloud_forecast"] is True
     assert "SFC/FL160" in parsed["obs_line"]
@@ -153,6 +155,7 @@ def test_parse_wind_flight_level_in_no_ash_line_is_not_mistaken_for_ash():
     # regression guard: "VA NOT IDENTIFIABLE ... WIND FL100" contains "FL"
     # but describes wind, not an ash cloud, and must not fire ash detection.
     text = (
+        "DTG: 20260818/0754Z\n"
         "ADVISORY NR: 2026/1\n"
         "AVIATION COLOUR CODE: ORANGE\n"
         "OBS VA CLD: VA NOT IDENTIFIABLE FM SATELLITE DATA WIND FL100 290/20KT\n"
@@ -165,3 +168,13 @@ def test_parse_wind_flight_level_in_no_ash_line_is_not_mistaken_for_ash():
 def test_parse_missing_required_fields_raises_source_error():
     with pytest.raises(advisories.AdvisorySourceError):
         advisories.parse_advisory_text("this is not a VAA at all")
+
+
+def test_parse_malformed_dtg_raises_source_error():
+    text = (
+        "DTG: not-a-real-dtg\n"
+        "ADVISORY NR: 2026/1\n"
+        "AVIATION COLOUR CODE: ORANGE\n"
+    )
+    with pytest.raises(advisories.AdvisorySourceError):
+        advisories.parse_advisory_text(text)

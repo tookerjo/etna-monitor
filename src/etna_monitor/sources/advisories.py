@@ -137,8 +137,8 @@ def fetch_advisory_text(text_url, user_agent, timeout=DEFAULT_TIMEOUT, session=N
 
 def parse_advisory_text(raw_text):
     """Parse a raw VAA text body into a dict with the fields Tier 1 needs:
-    advisory_nr, colour_code, eruption_details, obs_line, forecast_lines,
-    has_ash_cloud_forecast, raw_text.
+    advisory_nr, published_utc, colour_code, eruption_details, obs_line,
+    forecast_lines, has_ash_cloud_forecast, raw_text.
 
     Raises AdvisorySourceError if the expected fields are missing (format
     changed) -- callers must not fall back to a silently empty result.
@@ -151,6 +151,8 @@ def parse_advisory_text(raw_text):
         stripped = line.strip()
         if stripped.startswith("ADVISORY NR:"):
             fields["advisory_nr"] = stripped.split(":", 1)[1].strip()
+        elif stripped.startswith("DTG:"):
+            fields["dtg"] = stripped.split(":", 1)[1].strip()
         elif stripped.startswith("AVIATION COLOUR CODE:"):
             fields["colour_code"] = stripped.split(":", 1)[1].strip()
         elif stripped.startswith("ERUPTION DETAILS:"):
@@ -160,10 +162,10 @@ def parse_advisory_text(raw_text):
         elif stripped.startswith("FCST VA CLD"):
             forecast_lines.append(stripped)
 
-    if "advisory_nr" not in fields or "colour_code" not in fields:
+    if "advisory_nr" not in fields or "colour_code" not in fields or "dtg" not in fields:
         raise AdvisorySourceError(
-            "VAAC advisory text is missing ADVISORY NR or AVIATION COLOUR CODE "
-            "-- format may have changed"
+            "VAAC advisory text is missing ADVISORY NR, DTG, or AVIATION COLOUR "
+            "CODE -- format may have changed"
         )
 
     ash_lines = ([obs_line] if obs_line else []) + forecast_lines
@@ -171,6 +173,7 @@ def parse_advisory_text(raw_text):
 
     return {
         "advisory_nr": fields["advisory_nr"],
+        "published_utc": _parse_dtg(fields["dtg"]),
         "colour_code": fields["colour_code"],
         "eruption_details": fields.get("eruption_details", ""),
         "obs_line": obs_line or "",
@@ -185,3 +188,13 @@ def _line_indicates_ash(line):
     if any(marker in upper for marker in _NO_ASH_MARKERS):
         return False
     return "FL" in upper or "SFC" in upper
+
+
+def _parse_dtg(dtg):
+    # "20260818/0754Z" -> "2026-08-18T07:54:00Z". Confirmed shape against
+    # the real advisory sample above; DTG is always UTC ("Z").
+    match = re.match(r"^(\d{4})(\d{2})(\d{2})/(\d{2})(\d{2})Z$", dtg)
+    if not match:
+        raise AdvisorySourceError(f"could not parse DTG {dtg!r} -- format may have changed")
+    year, month, day, hour, minute = match.groups()
+    return f"{year}-{month}-{day}T{hour}:{minute}:00Z"
