@@ -1,0 +1,69 @@
+name: etna-monitor
+
+# Daily scheduled run. Times are UTC.
+# 06:15 UTC is roughly 08:15 in Sicily, before the day's plans are set.
+on:
+  schedule:
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Fetch and evaluate without sending or writing state"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: etna-monitor
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run monitor
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_TO: ${{ secrets.SMTP_TO }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python -m etna_monitor.run --dry-run
+          else
+            python -m etna_monitor.run
+          fi
+
+      - name: Commit state
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git config user.name "etna-monitor"
+          git config user.email "etna-monitor@users.noreply.github.com"
+          git add data/state.json
+          if git diff --staged --quiet; then
+            echo "No state change."
+          else
+            git commit -m "state: run $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+# Note: GitHub disables scheduled workflows in repositories with no activity
+# for 60 days. This one commits on most runs, which keeps it alive. If state
+# stops changing for a long period, the schedule can be deactivated silently.
+# The weekly heartbeat in the application is what catches that.
