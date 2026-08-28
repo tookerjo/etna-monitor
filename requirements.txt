@@ -1,2 +1,5 @@
 requests
 PyYAML
+# Installs this repo itself (src/ layout) so `python -m etna_monitor.run`
+# resolves without a separate `pip install -e .` step.
+-e .
