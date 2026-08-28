@@ -233,7 +233,8 @@ def format_tier1_message(advisory):
     if advisory["has_ash_cloud_forecast"]:
         reasons.append("ash cloud reported at a flight level")
     first_line = f"TIER 1 -- Etna advisory {advisory['advisory_nr']}: {'; '.join(reasons)}"
-    return first_line + "\n\n" + advisory["raw_text"]
+    body = notify.format_tier1_body(advisory["raw_text"])
+    return first_line + "\n\n" + body
 
 
 def format_tier2_message(seismic_result, thermal_result):

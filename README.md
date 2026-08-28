@@ -93,10 +93,11 @@ fully written, never a partial file.
 
 ```
 src/etna_monitor/
-  state.py        atomic JSON state store, dedup/trim helpers
-  thresholds.py   pure count/ratio evaluation, no I/O, no clock reads
-  notify.py       ntfy.sh push + optional SMTP email
-  run.py          wires everything together; the CLI entry point
+  state.py            atomic JSON state store, dedup/trim helpers
+  thresholds.py       pure count/ratio evaluation, no I/O, no clock reads
+  advisory_format.py  reformats a raw VAAC advisory for phone readability
+  notify.py           ntfy.sh push + optional SMTP email
+  run.py              wires everything together; the CLI entry point
   sources/
     seismic.py     INGV FDSN event web service client
     thermal.py     NASA FIRMS VIIRS client

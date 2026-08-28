@@ -324,7 +324,10 @@ def test_latest_known_colour_code_picks_highest_key():
 # --- message formatting ---
 
 
-def test_format_tier1_message_includes_raw_text_verbatim():
+def test_format_tier1_message_includes_formatted_body():
+    # Body formatting itself is advisory_format.py's job (see
+    # tests/test_advisory_format.py); this only checks run.py wires the
+    # first line and the formatted body together correctly.
     advisory = {
         "advisory_nr": "2026/200",
         "colour_code": "RED",
@@ -340,7 +343,8 @@ def test_format_tier1_message_includes_raw_text_verbatim():
     assert message.startswith("TIER 1")
     assert "2026/200" in message
     assert "ORANGE -> RED" in message
-    assert VAAC_TEXT_SAMPLE in message
+    assert "Colour code ORANGE" in message  # from the formatted body, not the raw text
+    assert "N3744 E01459" not in message  # coordinate polygons must not leak through
 
 
 def test_format_tier2_message_only_mentions_fired_signals():

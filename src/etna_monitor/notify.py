@@ -32,6 +32,8 @@ from email.mime.text import MIMEText
 
 import requests
 
+from . import advisory_format
+
 NTFY_DEFAULT_BASE_URL = "https://ntfy.sh"
 NTFY_DEFAULT_TIMEOUT = 30
 SMTP_DEFAULT_TIMEOUT = 30
@@ -39,6 +41,13 @@ SMTP_DEFAULT_TIMEOUT = 30
 
 class NotifyError(Exception):
     """Raised by a single channel sender when delivery fails."""
+
+
+def format_tier1_body(raw_advisory_text):
+    """Presentation only: reformats a raw VAAC advisory into a short,
+    phone-readable message before it goes out over any channel. See
+    advisory_format.py -- this never changes whether an alert fires."""
+    return advisory_format.format_advisory(raw_advisory_text)
 
 
 def send_ntfy(

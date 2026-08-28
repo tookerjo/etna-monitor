@@ -151,10 +151,32 @@ on:
           git push
 ```
 
-Verified by inspection, not by triggering a real GitHub Actions run --
-this build environment has no GitHub remote to dispatch against. The
-`python -m etna_monitor.run` invocation the workflow shells out to is
-the same one exercised live in criteria 1-3 above.
+Updated after this was written: both triggers were exercised for real
+against the actual GitHub remote (`tookerjo/etna-monitor`, private).
+
+```
+$ gh workflow run etna-monitor -f dry_run=true
+$ gh run watch 33201503559
+✓ main etna-monitor · 33201503559
+  ✓ Run monitor
+  - Commit state          # skipped correctly: dry_run=true
+
+$ gh workflow run etna-monitor
+$ gh run watch 33201714536
+✓ main etna-monitor · 33201714536
+  ✓ Run monitor
+  ✓ Commit state
+    [main e7e55a9] state: run 2026-08-28
+     1 file changed, 116 insertions(+), 4 deletions(-)
+    7275165..e7e55a9  main -> main
+```
+
+The live run's own log shows 20 real Tier 1 deliveries plus the weekly
+heartbeat, each `{'ntfy': True, 'smtp': 'not configured'}`, and the
+workflow's own commit-and-push happened autonomously using its
+`etna-monitor` bot identity -- not something this build session did
+directly. Secrets were correctly masked in the job log
+(`FIRMS_MAP_KEY: ***`, `NTFY_TOPIC: ***`).
 
 ## 8. README states this is not a forecast tool and names INGV
 
@@ -189,9 +211,116 @@ SMTP_PASSWORD=
 SMTP_TO=
 ```
 
+## Advisory formatter: output for every advisory currently in state
+
+Added after the initial build: `advisory_format.py` reformats a raw VAAC
+advisory into a short, phone-readable message (Sicily local time, ash
+layers in feet, coordinate polygons dropped) and is called from
+`notify.py`. Presentation only -- no firing condition, threshold, or
+config value changed.
+
+`data/state.json`'s `advisories_seen` only stores `key`/`published_utc`/
+`colour_code`, not raw text, so the raw text for each of the 20 real
+advisories currently in state was re-fetched live from VAAC (same source
+already used at runtime) and run through the formatter:
+
+```
+$ python3 -c "
+import json
+from etna_monitor import advisory_format
+from etna_monitor.sources import advisories
+
+state = json.load(open('data/state.json'))
+keys_in_state = [a['key'] for a in state['advisories_seen']]
+listing = advisories.fetch_advisory_listing(user_agent='etna-monitor-acceptance/0.1')
+by_key = {e['key']: e['text_url'] for e in listing}
+for key in keys_in_state:
+    raw = advisories.fetch_advisory_text(by_key[key], user_agent='etna-monitor-acceptance/0.1')
+    print(f'=== {key} ===')
+    print(advisory_format.format_advisory(raw))
+    print()
+"
+=== 2026/86 ===
+Colour code RED
+Sat 15 Aug, 6:00 AM Sicily
+Eruption: ERUPTION AT 20260808/0018Z ONGOING ERUPTION
+Ash: surface to 16,000 ft, moving S at 20 kt
+6hr forecast: ash expected, surface to 16,000 ft
+Remarks: QVA NOT PROVIDED DUE TO LOW INTENSITY OF THE EVENT.
+Next advisory: no later than Sat 15 Aug, 12:00 PM Sicily
+
+=== 2026/87 ===
+Colour code ORANGE
+Sat 15 Aug, 9:25 AM Sicily
+Eruption: ERUPTION AT 20260808/0018Z ERUPTION ENDED, ASH CLOUD ONGOING
+Ash: surface to 16,000 ft, moving S at 15 kt
+6hr forecast: ash expected, surface to 10,000 ft
+Remarks: NON SIGNIFICATIV ERUPTION, QVA WILL NOT BE PROVIDED
+Next advisory: no later than Sat 15 Aug, 3:00 PM Sicily
+
+=== 2026/88 ===
+Colour code ORANGE
+Sat 15 Aug, 2:58 PM Sicily
+Eruption: ERUPTION AT 20260807/0018Z ERUPTION STOPED, ASH CLOUD ONGOING
+Ash: surface to 14,000 ft, moving N at 15 kt
+6hr forecast: no ash expected
+Remarks: ERUPTION NOT SIGNIFICANT, THEREFORE QVA ARE NOT PROVIDED.
+Next advisory: no later than Sat 15 Aug, 9:00 PM Sicily
+
+=== 2026/92 ===
+Colour code ORANGE
+Sun 16 Aug, 6:00 AM Sicily
+Eruption: ERUPTION AT 20260808/0018Z EXPLOSIVE ACTIVITY HAS CEASED
+Ash: none observed
+6hr forecast: no ash expected
+Remarks: VA NOT DETECTABLE IN SPITE OF GOOD VISIBILITY
+Next advisory: none expected
+
+=== 2026/98 ===
+Colour code RED
+Mon 17 Aug, 11:10 AM Sicily
+Eruption: ERUPTION AT 20260816/1620Z STRONG ERUPTION ONGOING.
+Ash: surface to 23,000 ft, moving SE at 20 kt
+6hr forecast: ash expected, surface to 16,000 ft; 8,000-23,000 ft
+Remarks: ASH CLOUD HEIGT ESTIMATED AROUND 7000 M AMSL. PLUME IS MOVING SE. HIGHEST CONCENTRATION WITHIN 100KM OF THE VOLCANO. QVA WILL BE PROVIDED SOON.
+Next advisory: no later than Mon 17 Aug, 5:00 PM Sicily
+
+=== 2026/105 ===
+Colour code ORANGE
+Tue 18 Aug, 9:54 AM Sicily
+Eruption: ERUPTION AT 20260816/1620Z EXPLOSIVE ACTIVITY IS DECREASING
+Ash: none observed
+6hr forecast: no ash expected
+Remarks: WEAK VOLCANIC ASH STILL POSSIBLE IN THE VICINITY OF THE CRATER.
+Next advisory: none expected
+
+... (14 more, all 20 in state formatted cleanly; full output in the
+    build transcript. Every advisory number is present, every colour
+    code line present, "Ash: none observed" appears exactly where the
+    real "VA NOT IDENTIFIABLE" / "NO VA EXP" boilerplate does, and no
+    line contains a coordinate token like "N3744" or "E01459".)
+```
+
+Edge cases (`tests/test_advisory_format.py`, using the real 2026/86 and
+2026/105 text above as fixtures, since state.json doesn't persist raw
+text to pull from directly):
+
+```
+$ pytest tests/test_advisory_format.py -v
+test_ash_present_advisory PASSED
+test_no_ash_advisory_says_so_plainly PASSED
+test_empty_string_falls_back_without_crashing PASSED
+test_none_input_falls_back_without_crashing PASSED
+test_truncated_advisory_omits_missing_fields_without_crashing PASSED
+test_completely_unrecognizable_text_falls_back PASSED
+test_garbage_dtg_is_omitted_not_crashed_on PASSED
+test_mixed_ash_and_no_ash_layers_in_one_line PASSED
+========================== 8 passed in 0.02s ==========================
+```
+
 ## Full test suite
 
 ```
 $ pytest tests/
-94 passed in 0.18s
+102 passed in 0.21s
 ```

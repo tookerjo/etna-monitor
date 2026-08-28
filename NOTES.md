@@ -107,3 +107,20 @@ VAAC doesn't publish machine-readable summaries any denser than that). The
 listing-then-selective-fetch design minimizes this to the smallest number
 of requests that can still deliver Tier 1's verbatim advisory text
 requirement.
+
+
+## Deliberate deviation from spec: Tier 1's body is no longer verbatim
+
+SPEC.md says Tier 1's message includes "the observed and forecast ash
+cloud lines verbatim from the advisory text." As of the advisory
+formatter (`advisory_format.py`), this is no longer literally true: the
+body is reformatted for phone readability (Sicily local time instead of
+UTC, feet instead of flight levels, coordinate polygons dropped
+entirely) rather than pasted in unchanged. This was an explicit, scoped
+request ("presentation only... do not change any firing condition,
+threshold, or config value") -- the firing logic and message *content*
+(which advisory, which colour code, whether ash is present) are
+unchanged; only how that content is typeset changed. If formatting
+fails for any reason, the raw text is still sent verbatim as a
+fallback, so the original spec behavior is the safety net, not the
+default.
