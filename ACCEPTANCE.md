@@ -267,6 +267,33 @@ Ash: surface to 14,000 ft, moving N at 15 kt
 Remarks: ERUPTION NOT SIGNIFICANT, THEREFORE QVA ARE NOT PROVIDED.
 Next advisory: no later than Sat 15 Aug, 9:00 PM Sicily
 
+=== 2026/89 ===
+Colour code ORANGE
+Sat 15 Aug, 8:01 PM Sicily
+Eruption: ERUPTION AT 20260805/0018Z ACTIVITY HAS DECREASED.
+Ash: surface to 12,000 ft, moving S at 10 kt
+6hr forecast: no ash expected
+Remarks: THIN ASH CLOUD NEAR LYBIAN COAST, MOVING SOUTH AND DISSIPATING. QVA NOT PROVIDED DUE TO LOW INTENSITY OF THE EVENT.
+Next advisory: no later than Sun 16 Aug, 2:00 AM Sicily
+
+=== 2026/90 ===
+Colour code ORANGE
+Sat 15 Aug, 8:01 PM Sicily
+Eruption: ERUPTION AT 20260805/0018Z ACTIVITY HAS DECREASED.
+Ash: surface to 12,000 ft, moving S at 10 kt
+6hr forecast: no ash expected
+Remarks: THIN ASH CLOUD NEAR LYBIAN COAST, MOVING SOUTH AND DISSIPATING. QVA NOT PROVIDED DUE TO LOW INTENSITY OF THE EVENT.
+Next advisory: no later than Sun 16 Aug, 2:00 AM Sicily
+
+=== 2026/91 ===
+Colour code ORANGE
+Sat 15 Aug, 11:59 PM Sicily
+Eruption: ERUPTION AT 20260808/0018Z NO MORE ASH EMISSION.
+Ash: surface to 12,000 ft, moving S at 10 kt
+6hr forecast: no ash expected
+Remarks: THIN ASH CLOUD IN NORTH OF LYBIA, DISSIPATING. QVA NOT PROVIDED DUE TO LOW INTENSITY OF THE EVENT.
+Next advisory: no later than Sun 16 Aug, 6:00 AM Sicily
+
 === 2026/92 ===
 Colour code ORANGE
 Sun 16 Aug, 6:00 AM Sicily
@@ -275,6 +302,51 @@ Ash: none observed
 6hr forecast: no ash expected
 Remarks: VA NOT DETECTABLE IN SPITE OF GOOD VISIBILITY
 Next advisory: none expected
+
+=== 2026/93 ===
+Colour code ORANGE
+Sun 16 Aug, 11:18 AM Sicily
+Eruption: ERUPTION AT 20260808/0018Z WEAK ERUPTION
+Ash: 10,000-20,000 ft
+6hr forecast: no ash expected
+Remarks: WEAK ERUPTION, POSSIBLE ASH IN THE VICINITY OF THE SUMMIT. WEAK PLUME MAINLY COMPOSED OF WATER AND SO2 DRIFTING SOUTHEAST.
+Next advisory: none expected
+
+=== 2026/94 ===
+Colour code RED
+Sun 16 Aug, 10:31 PM Sicily
+Eruption: ERUPTION AT 20260816/2015Z ERUPTION STARTED AT 20H15
+Ash: surface to 16,000 ft, moving SE at 10 kt
+6hr forecast: no ash expected
+Remarks: ASH CLOUD MOVES TOWARD SE
+Next advisory: no later than Sun 16 Aug, 11:00 PM Sicily
+
+=== 2026/95 ===
+Colour code RED
+Sun 16 Aug, 11:00 PM Sicily
+Eruption: ERUPTION AT 20260816/2015Z ONGOING EURPTION
+Ash: surface to 16,000 ft, moving SE at 10 kt
+6hr forecast: ash expected, surface to 16,000 ft
+Remarks: WEAK EMISSION, ASH CLOUD MOVING SOUTHEAST DIRECTION. QVA NOT PROVIDED DUE TO THE LOW INTENSITY OF THE EVENT
+Next advisory: no later than Mon 17 Aug, 5:00 AM Sicily
+
+=== 2026/96 ===
+Colour code RED
+Mon 17 Aug, 5:00 AM Sicily
+Eruption: ERUPTION AT 20260816/2015Z ONGOING ERUPTION
+Ash: surface to 16,000 ft, moving SE at 15 kt
+6hr forecast: ash expected, surface to 16,000 ft
+Remarks: WEAK EMISSION, ASH CLOUD MOVING SOUTHEAST DIRECTION. QVA NOT PROVIDED DUE TO THE LOW INTENSITY OF THE EVENT
+Next advisory: no later than Mon 17 Aug, 11:00 AM Sicily
+
+=== 2026/97 ===
+Colour code RED
+Mon 17 Aug, 5:05 AM Sicily
+Eruption: ERUPTION AT 20260816/2015Z ONGOING ERUPTION
+Ash: surface to 16,000 ft, moving SE at 15 kt
+6hr forecast: ash expected, surface to 16,000 ft
+Remarks: WEAK EMISSION, ASH CLOUD MOVING SOUTHEAST DIRECTION. QVA NOT PROVIDED DUE TO THE LOW INTENSITY OF THE EVENT
+Next advisory: no later than Mon 17 Aug, 11:00 AM Sicily
 
 === 2026/98 ===
 Colour code RED
@@ -285,6 +357,60 @@ Ash: surface to 23,000 ft, moving SE at 20 kt
 Remarks: ASH CLOUD HEIGT ESTIMATED AROUND 7000 M AMSL. PLUME IS MOVING SE. HIGHEST CONCENTRATION WITHIN 100KM OF THE VOLCANO. QVA WILL BE PROVIDED SOON.
 Next advisory: no later than Mon 17 Aug, 5:00 PM Sicily
 
+=== 2026/99 ===
+Colour code RED
+Mon 17 Aug, 5:12 PM Sicily
+Eruption: ERUPTION AT 20260816/1620Z STRONG ERUPTION ONGOING.
+Ash: surface to 16,000 ft, moving SE at 20 kt; surface to 23,000 ft, moving SE at 30 kt
+6hr forecast: ash expected, surface to 16,000 ft; 8,000-23,000 ft
+Remarks: ASH CLOUD HEIGT ESTIMATED AROUND 7000 M AMSL. PLUME IS MOVING SE.
+Next advisory: no later than Mon 17 Aug, 11:00 PM Sicily
+
+=== 2026/100 ===
+Colour code RED
+Mon 17 Aug, 5:28 PM Sicily
+Eruption: ERUPTION AT 20260816/1620Z STRONG ERUPTION ONGOING.
+Ash: surface to 16,000 ft, moving SE at 20 kt; surface to 23,000 ft, moving SE at 30 kt
+6hr forecast: ash expected, surface to 16,000 ft; 8,000-23,000 ft
+Remarks: ASH CLOUD HEIGT ESTIMATED AROUND 7000 M AMSL. PLUME IS MOVING SE.
+Next advisory: no later than Mon 17 Aug, 11:00 PM Sicily
+
+=== 2026/101 ===
+Colour code RED
+Mon 17 Aug, 6:35 PM Sicily
+Eruption: ERUPTION AT 20260816/1620Z STRONG ERUPTION ONGOING.
+Ash: surface to 16,000 ft, moving SE at 20 kt; surface to 23,000 ft, moving SE at 30 kt
+6hr forecast: ash expected, surface to 16,000 ft; 8,000-23,000 ft
+Remarks: ASH CLOUD HEIGT ESTIMATED AROUND 7000 M AMSL. PLUME IS MOVING SE. DUE TO THE LOW RELIABITY OF THE MODEL, QVA AND CONCENTRATION CHARTS WILL NOT BE PROVIDED.
+Next advisory: no later than Mon 17 Aug, 11:00 PM Sicily
+
+=== 2026/102 ===
+Colour code RED
+Mon 17 Aug, 11:06 PM Sicily
+Eruption: ERUPTION AT 20260816/1620Z ONGOING ERUPTION
+Ash: surface to 16,000 ft, moving SE at 20 kt; surface to 24,000 ft, moving SE at 30 kt
+6hr forecast: ash expected, surface to 16,000 ft; surface to 24,000 ft
+Remarks: ASH CLOUD HEIGT ESTIMATED AROUND 7000 M AMSL. PLUME IS MOVING SOUTHEAST.
+Next advisory: no later than Tue 18 Aug, 5:00 AM Sicily
+
+=== 2026/103 ===
+Colour code RED
+Tue 18 Aug, 5:00 AM Sicily
+Eruption: ERUPTION AT 20260816/1620Z ONGOING ERUPTION DECREASING
+Ash: surface to 15,000 ft, moving SE at 25 kt; 5,000-20,000 ft, moving SE at 20 kt
+6hr forecast: ash expected, surface to 15,000 ft; 5,000-20,000 ft
+Remarks: ASH EMISSION DECREASING. ASH CLOUD MAINLY COMPOSED OF WATER AND SO2 AND EASTERN CLOUD DISSIPATING. QVA NOT PROVIDED DUE TO THE LOW INTENSITY OF THE EVENT.
+Next advisory: no later than Tue 18 Aug, 11:00 AM Sicily
+
+=== 2026/104 ===
+Colour code RED
+Tue 18 Aug, 5:00 AM Sicily
+Eruption: ERUPTION AT 20260816/1620Z ONGOING ERUPTION DECREASING
+Ash: surface to 15,000 ft, moving SE at 25 kt; 5,000-20,000 ft, moving SE at 20 kt
+6hr forecast: ash expected, surface to 15,000 ft; 5,000-20,000 ft
+Remarks: ASH EMISSION DECREASING. ASH CLOUD MAINLY COMPOSED OF WATER AND SO2 AND EASTERN CLOUD DISSIPATING. QVA NOT PROVIDED DUE TO THE LOW INTENSITY OF THE EVENT.
+Next advisory: no later than Tue 18 Aug, 11:00 AM Sicily
+
 === 2026/105 ===
 Colour code ORANGE
 Tue 18 Aug, 9:54 AM Sicily
@@ -293,13 +419,14 @@ Ash: none observed
 6hr forecast: no ash expected
 Remarks: WEAK VOLCANIC ASH STILL POSSIBLE IN THE VICINITY OF THE CRATER.
 Next advisory: none expected
-
-... (14 more, all 20 in state formatted cleanly; full output in the
-    build transcript. Every advisory number is present, every colour
-    code line present, "Ash: none observed" appears exactly where the
-    real "VA NOT IDENTIFIABLE" / "NO VA EXP" boilerplate does, and no
-    line contains a coordinate token like "N3744" or "E01459".)
 ```
+
+All 20 advisories currently in state are formatted above -- none omitted.
+Every advisory number and colour code line is present, "Ash: none
+observed" appears exactly where the real "VA NOT IDENTIFIABLE" / "NO VA
+EXP" boilerplate does (2026/92, 2026/105), and no line contains a
+coordinate token like "N3744" or "E01459" (confirmed:
+`grep -E "N[0-9]{4}|E[0-9]{5}"` over this output matches nothing).
 
 Edge cases (`tests/test_advisory_format.py`, using the real 2026/86 and
 2026/105 text above as fixtures, since state.json doesn't persist raw
