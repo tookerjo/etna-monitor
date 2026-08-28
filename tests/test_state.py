@@ -13,6 +13,7 @@ def test_default_state_shape():
     assert s["last_run_utc"] is None
     assert s["runs"] == []
     assert s["seismic_events"] == []
+    assert s["seismic_coverage_start_date"] is None
     assert s["thermal_daily"] == []
     assert s["advisories_seen"] == []
     assert s["last_heartbeat_utc"] is None
@@ -163,6 +164,21 @@ def test_trim_seismic_events_drops_old_events():
     state.trim_seismic_events(s, now, retention_days=45)
     ids = [e["event_id"] for e in s["seismic_events"]]
     assert ids == ["recent"]
+
+
+def test_extend_seismic_coverage_sets_initial_value():
+    s = state.default_state()
+    state.extend_seismic_coverage(s, "2026-07-01")
+    assert s["seismic_coverage_start_date"] == "2026-07-01"
+
+
+def test_extend_seismic_coverage_only_grows_backward():
+    s = state.default_state()
+    state.extend_seismic_coverage(s, "2026-07-15")
+    state.extend_seismic_coverage(s, "2026-08-01")  # later date, should not overwrite
+    assert s["seismic_coverage_start_date"] == "2026-07-15"
+    state.extend_seismic_coverage(s, "2026-06-01")  # earlier date, should overwrite
+    assert s["seismic_coverage_start_date"] == "2026-06-01"
 
 
 def test_upsert_thermal_daily_adds_and_updates():

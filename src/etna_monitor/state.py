@@ -23,6 +23,15 @@ def default_state():
         "last_run_utc": None,
         "runs": [],
         "seismic_events": [],
+        # Earliest date (YYYY-MM-DD) INGV has actually been queried back to.
+        # Not one of the spec's named top-level keys -- added because a day
+        # with zero seismic events is otherwise indistinguishable from a day
+        # nobody checked, which would silently defeat cold-start detection
+        # (thresholds.py's "fewer than 7 days of history" rule needs to know
+        # how many trailing days are real observations, not zero-filled
+        # guesses). Thermal doesn't need an equivalent: thermal_daily already
+        # carries detections_available per day. See NOTES.md.
+        "seismic_coverage_start_date": None,
         "thermal_daily": [],
         "advisories_seen": [],
         "last_heartbeat_utc": None,
@@ -82,6 +91,16 @@ def upsert_seismic_events(state, events):
     state["seismic_events"] = sorted(
         existing.values(), key=lambda e: e["origin_time"]
     )
+
+
+def extend_seismic_coverage(state, since_date):
+    """Record that INGV has now been queried back to since_date (a
+    "YYYY-MM-DD" string). Coverage only ever grows backward in time: if
+    since_date is earlier than what's already recorded, it replaces it;
+    otherwise the existing value is left alone."""
+    existing = state.get("seismic_coverage_start_date")
+    if existing is None or since_date < existing:
+        state["seismic_coverage_start_date"] = since_date
 
 
 def trim_seismic_events(state, now, retention_days=SEISMIC_RETENTION_DAYS):
