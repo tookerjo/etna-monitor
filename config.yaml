@@ -1,0 +1,51 @@
+# Etna Monitor configuration.
+#
+# Every numeric threshold below is the spec's initial guess, not a
+# validated value. Expect false alarms in the first week and expect to
+# tune these at least twice. Tuning is a config edit, not a code change.
+
+location:
+  # Summit reference position, matching the position VAAC Toulouse states
+  # in its own Etna advisories.
+  summit_latitude: 37.733
+  summit_longitude: 14.983
+
+seismic:
+  radius_km: 15                # spec-defined query radius, not a guess
+  min_magnitude: 1.0           # spec-defined cutoff, not a guess
+  poll_window_days: 3          # unvalidated: days queried on each normal run,
+                                # wide enough to catch INGV's post-hoc revisions
+  baseline_days: 30            # spec-defined trailing window
+  min_baseline_days: 7         # spec-defined cold start cutoff
+  min_count: 5                 # unvalidated, spec default
+  min_ratio: 2.5               # unvalidated, spec default
+
+thermal:
+  box_km: 10                   # spec-defined bounding box side length
+  source: VIIRS_SNPP_NRT       # confirmed valid identifier as of 2026-08-28;
+                                # see src/etna_monitor/sources/thermal.py
+  poll_window_days: 2          # unvalidated: covers satellite overpass lag
+                                # into the previous UTC day
+  baseline_days: 14            # spec-defined trailing window
+  min_baseline_days: 7         # spec-defined cold start cutoff
+  min_count: 5                 # unvalidated, spec default
+  min_ratio: 3.0               # unvalidated, spec default
+
+advisories:
+  volcano_slug: etna
+
+heartbeat:
+  interval_days: 7             # spec-defined: once per week
+
+notify:
+  ntfy:
+    base_url: https://ntfy.sh
+  smtp:
+    enabled: false              # optional second channel, off by default
+    use_tls: true
+    port: 587
+
+# Sent on every outbound request so INGV, NASA, and Meteo-France can see who
+# is calling. Personal, low-volume use -- edit the contact detail if you
+# want a way for a maintainer to reach you about this specific job.
+user_agent: "etna-monitor/0.1 (personal Etna activity monitor, one request per source per run)"
