@@ -124,3 +124,29 @@ unchanged; only how that content is typeset changed. If formatting
 fails for any reason, the raw text is still sent verbatim as a
 fallback, so the original spec behavior is the safety net, not the
 default.
+
+## Finding: the seismic ratio rule never binds
+
+INGV's public FDSN catalog for the Etna region has a completeness floor at
+magnitude 1.0. Querying 1 Jun to 29 Aug 2026, 15 km radius around
+37.733 N 14.983 E, returned 74 events at `minmagnitude=1.0` and the
+identical 74 at `minmagnitude=0.5`, with the smallest magnitude in the set
+being 1.0. `minmagnitude=2.0` returned 9, confirming the parameter is
+applied correctly rather than ignored -- the catalog itself simply has
+nothing below M1.0 for this region.
+
+Mean is 0.82 events per day. At that density the minimum-count floor of 5
+is already six to eight times the mean, so the 2.5x ratio can never be the
+binding condition at any baseline window length. The rule is effectively
+"five or more events in 24 hours."
+
+Daily distribution over those 90 days: one day at 14 events (13 Jun), one
+at 6 (20 Aug), one at 5 (15 Aug), two at 4, one at 3, and the rest at 1 or
+2. The floor of 5 would have fired three times in 90 days.
+
+Config is intentionally left unchanged. The ratio costs nothing to keep,
+and lowering the floor below 5 would fire on ordinary weeks. Verified
+1 Sep 2026.
+
+Increasing seismic sensitivity would require a different INGV data
+product, not a different query against this endpoint.
