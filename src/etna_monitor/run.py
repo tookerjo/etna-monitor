@@ -152,6 +152,73 @@ def latest_known_colour_code(state_dict):
     return max(seen, key=_advisory_sort_key)["colour_code"]
 
 
+def latest_known_advisory_summary(state_dict):
+    """The colour code, eruption id, and ash ceiling of the advisory
+    already in state with the highest YEAR/NNN key, for classify_direction
+    to compare the newest new advisory against. None if state has no
+    advisories yet.
+
+    An entry recorded before eruption_id/ash_ceiling_ft existed in the
+    schema has neither key; .get() reads those back as None, which
+    classify_direction treats as "no evidence" rather than a change."""
+    seen = state_dict["advisories_seen"]
+    if not seen:
+        return None
+    latest = max(seen, key=_advisory_sort_key)
+    return {
+        "colour_code": latest.get("colour_code"),
+        "eruption_id": latest.get("eruption_id"),
+        "ash_ceiling_ft": latest.get("ash_ceiling_ft"),
+    }
+
+
+# Aviation colour code scale, low to high. Anything not on this list (a
+# blank field, "NOT GIVEN", a typo) ranks as None so it can never be
+# compared -- classify_direction must not assert an escalation from a
+# colour it can't place on the scale.
+_COLOUR_ORDER = ["GREEN", "YELLOW", "ORANGE", "RED"]
+
+
+def _colour_rank(colour_code):
+    if not colour_code:
+        return None
+    code = colour_code.strip().upper()
+    return _COLOUR_ORDER.index(code) if code in _COLOUR_ORDER else None
+
+
+def classify_direction(previous, newest):
+    """Pure comparison, no I/O. `previous` is latest_known_advisory_summary's
+    return value (None if state had no advisory before this run); `newest`
+    is the same shape for the batch's newest new advisory.
+
+    Returns "escalation" if the colour code moved up, the ash ceiling
+    increased, or the eruption identifier changed; otherwise
+    "same_or_less". No prior advisory to compare against is SAME OR LESS,
+    not escalation -- the caller is responsible for saying the baseline is
+    new rather than claiming no change (see format_tier1_batch_message).
+    A field missing or unparseable on either side is never treated as
+    evidence of escalation; only a positively confirmed change counts."""
+    if previous is None:
+        return "same_or_less"
+
+    prev_rank = _colour_rank(previous.get("colour_code"))
+    new_rank = _colour_rank(newest.get("colour_code"))
+    if prev_rank is not None and new_rank is not None and new_rank > prev_rank:
+        return "escalation"
+
+    prev_ceiling = previous.get("ash_ceiling_ft")
+    new_ceiling = newest.get("ash_ceiling_ft")
+    if prev_ceiling is not None and new_ceiling is not None and new_ceiling > prev_ceiling:
+        return "escalation"
+
+    prev_eruption = previous.get("eruption_id")
+    new_eruption = newest.get("eruption_id")
+    if prev_eruption is not None and new_eruption is not None and new_eruption != prev_eruption:
+        return "escalation"
+
+    return "same_or_less"
+
+
 def _parse_iso(timestamp):
     return datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
 
@@ -235,6 +302,37 @@ def format_tier1_message(advisory):
     first_line = f"TIER 1 -- Etna advisory {advisory['advisory_nr']}: {'; '.join(reasons)}"
     body = notify.format_tier1_body(advisory["raw_text"])
     return first_line + "\n\n" + body
+
+
+def format_tier1_batch_message(direction, has_baseline, tier1_advisories):
+    """Exactly one Tier 1 message for the run, regardless of how many new
+    advisories were found this run (tier1_advisories, oldest first, same
+    shape as format_tier1_message expects).
+
+    One advisory: today's single-advisory rendering, unchanged. More than
+    one: a header naming the direction and the count, the newest advisory
+    formatted in full, then a single line listing the other advisory
+    numbers -- their full text is already in state and is not resent, so
+    two advisories whose formatted output happens to be byte-identical
+    still produce one message with the body shown once."""
+    if len(tier1_advisories) == 1:
+        return format_tier1_message(tier1_advisories[0])
+
+    count = len(tier1_advisories)
+    newest = tier1_advisories[-1]
+    others = tier1_advisories[:-1]
+
+    if not has_baseline:
+        header = f"New baseline, nothing to compare against yet. {count} new advisories since last run."
+    elif direction == "escalation":
+        header = f"Escalation. {count} new advisories since last run."
+    else:
+        header = f"Still active, no change. {count} new advisories since last run."
+
+    other_numbers = ", ".join(a["advisory_nr"] for a in others)
+    return "\n\n".join(
+        [header, format_tier1_message(newest), f"Other advisories this run: {other_numbers}"]
+    )
 
 
 def format_tier2_message(seismic_result, thermal_result):
@@ -323,6 +421,7 @@ def run_once(config, state_dict, now, map_key, session=None, smtp_client_cls=Non
     }
 
     messages = []
+    previous_advisory_summary = latest_known_advisory_summary(state_dict)
     previous_colour = latest_known_colour_code(state_dict)
     tier1_advisories = []
     for parsed in new_advisories:
@@ -336,11 +435,26 @@ def run_once(config, state_dict, now, map_key, session=None, smtp_client_cls=Non
         )
         previous_colour = parsed["colour_code"]
         state.record_advisory_seen(
-            state_dict, parsed["advisory_nr"], parsed["published_utc"], parsed["colour_code"]
+            state_dict,
+            parsed["advisory_nr"],
+            parsed["published_utc"],
+            parsed["colour_code"],
+            eruption_id=parsed.get("eruption_id"),
+            ash_ceiling_ft=parsed.get("ash_ceiling_ft"),
         )
 
-    for advisory in tier1_advisories:
-        messages.append(("Etna Monitor -- Tier 1", format_tier1_message(advisory)))
+    if tier1_advisories:
+        newest = tier1_advisories[-1]
+        newest_summary = {
+            "colour_code": newest["colour_code"],
+            "eruption_id": newest.get("eruption_id"),
+            "ash_ceiling_ft": newest.get("ash_ceiling_ft"),
+        }
+        direction = classify_direction(previous_advisory_summary, newest_summary)
+        batch_message = format_tier1_batch_message(
+            direction, previous_advisory_summary is not None, tier1_advisories
+        )
+        messages.append(("Etna Monitor -- Tier 1", batch_message))
 
     seismic_result = seismic_signal(config, state_dict, now, seismic_reachable)
     thermal_result = thermal_signal(config, state_dict, now.date().isoformat())
@@ -362,7 +476,7 @@ def run_once(config, state_dict, now, map_key, session=None, smtp_client_cls=Non
             delivery_results.append((title, _deliver(config, title, body, session=session, smtp_client_cls=smtp_client_cls)))
         if heartbeat_due:
             state.record_heartbeat(state_dict, now.strftime("%Y-%m-%dT%H:%M:%SZ"))
-        alerts_emitted = len(tier1_advisories) + (1 if tier2_body is not None else 0)
+        alerts_emitted = (1 if tier1_advisories else 0) + (1 if tier2_body is not None else 0)
         state.record_run(state_dict, now.strftime("%Y-%m-%dT%H:%M:%SZ"), sources_reachable, alerts_emitted, dry_run=False)
         state.trim_seismic_events(state_dict, now)
         state.trim_thermal_daily(state_dict, now)

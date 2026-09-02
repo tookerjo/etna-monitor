@@ -451,3 +451,69 @@ test_mixed_ash_and_no_ash_layers_in_one_line PASSED
 $ pytest tests/
 102 passed in 0.21s
 ```
+
+## Change: three runs a day, Tier 1 batched into one message per run
+
+Verified 2026-09-02, using the four real advisories from that morning's
+run (2026/107 through 2026/110, fetched live from vaac.meteo.fr) as the
+fixture, per the task's instruction. State at the time had 2026/106
+(colour ORANGE) as the only prior advisory, recorded before eruption_id
+and ash_ceiling_ft existed in the schema.
+
+```
+$ python -c "..." # batching logic run directly over the 107-110 set
+direction = same_or_less
+---
+Still active, no change. 4 new advisories since last run.
+
+TIER 1 -- Etna advisory 2026/110: new advisory published; ash cloud reported at a flight level
+
+Colour code ORANGE
+Wed 2 Sep, 11:00 AM Sicily
+Eruption: ERUPTION AT 20260901/2100Z WEAK ASH EMISSION
+Ash: surface to 12,000 ft, moving SE at 25 kt
+6hr forecast: no ash expected
+Remarks: THIN PLUME DETECTABLE ON WEBCAM. WEAK ASH EMISSION IN THE VICINITY OF THE VOLCANO. DUE TO THE LOW INTENSITY OF THIS ERUPTIVE EVENT, QVA DO NOT SHOW ANY SIGNIFICANT ASH CLOUD AND WILL NOT BE PROVIDED.
+Next advisory: will be issued by Wed 2 Sep, 5:00 PM Sicily
+
+Other advisories this run: 2026/107, 2026/108, 2026/109
+```
+
+One message for four new advisories, as required. Direction is SAME OR
+LESS even though 2026/109 carries a new eruption identifier
+(`20260901/2100Z` vs `20260831/2100Z` on 107/108) -- state's one prior
+advisory (2026/106) predates eruption_id/ash_ceiling_ft tracking, so
+there is nothing in state for that change to be new *against*. This is
+the behaviour the task asked to verify, not a bug: the escalation check
+compares the newest advisory to what state actually recorded, not to
+earlier advisories within the same run.
+
+```
+$ pytest tests/ -v -k "classify_direction or format_tier1_batch or record_advisory_seen or parse_extracts_eruption_id or parse_ash_ceiling"
+tests/test_advisories.py::test_parse_extracts_eruption_id_from_eruption_at_timestamp PASSED
+tests/test_advisories.py::test_parse_ash_ceiling_ft_from_real_ash_layer PASSED
+tests/test_advisories.py::test_parse_ash_ceiling_ft_none_when_no_real_ash_observed PASSED
+tests/test_advisories.py::test_parse_ash_ceiling_ft_ignores_wind_flight_levels_in_no_ash_line PASSED
+tests/test_run.py::test_classify_direction_escalates_on_colour_code_increase PASSED
+tests/test_run.py::test_classify_direction_same_or_less_on_colour_code_decrease PASSED
+tests/test_run.py::test_classify_direction_escalates_on_new_eruption_id PASSED
+tests/test_run.py::test_classify_direction_escalates_on_ash_ceiling_increase PASSED
+tests/test_run.py::test_classify_direction_no_ceiling_change_is_same_or_less PASSED
+tests/test_run.py::test_classify_direction_no_prior_advisory_is_same_or_less PASSED
+tests/test_run.py::test_classify_direction_missing_colour_code_on_either_side_never_crashes_or_escalates PASSED
+tests/test_run.py::test_classify_direction_unparseable_colour_code_never_escalates PASSED
+tests/test_run.py::test_classify_direction_on_the_real_107_110_batch_is_same_or_less PASSED
+tests/test_run.py::test_format_tier1_batch_message_single_advisory_matches_todays_rendering PASSED
+tests/test_run.py::test_format_tier1_batch_message_byte_identical_advisories_still_one_message PASSED
+tests/test_run.py::test_format_tier1_batch_message_escalation_header PASSED
+tests/test_run.py::test_format_tier1_batch_message_no_baseline_says_new_not_no_change PASSED
+tests/test_state.py::test_record_advisory_seen_new_returns_true PASSED
+tests/test_state.py::test_record_advisory_seen_existing_returns_false_and_updates PASSED
+tests/test_state.py::test_record_advisory_seen_stores_eruption_id_and_ash_ceiling PASSED
+====================== 20 passed, 105 deselected in 0.15s ======================
+```
+
+```
+$ pytest tests/
+125 passed in 0.23s
+```

@@ -222,6 +222,8 @@ def test_record_advisory_seen_new_returns_true():
             "key": "2026/042",
             "published_utc": "2026-08-27T10:00:00Z",
             "colour_code": "ORANGE",
+            "eruption_id": None,
+            "ash_ceiling_ft": None,
         }
     ]
 
@@ -233,6 +235,20 @@ def test_record_advisory_seen_existing_returns_false_and_updates():
     assert is_new is False
     assert len(s["advisories_seen"]) == 1
     assert s["advisories_seen"][0]["colour_code"] == "RED"
+
+
+def test_record_advisory_seen_stores_eruption_id_and_ash_ceiling():
+    s = state.default_state()
+    state.record_advisory_seen(
+        s,
+        "2026/107",
+        "2026-09-02T02:20:00Z",
+        "ORANGE",
+        eruption_id="20260831/2100Z",
+        ash_ceiling_ft=12000,
+    )
+    assert s["advisories_seen"][0]["eruption_id"] == "20260831/2100Z"
+    assert s["advisories_seen"][0]["ash_ceiling_ft"] == 12000
 
 
 def test_record_heartbeat_sets_timestamp():

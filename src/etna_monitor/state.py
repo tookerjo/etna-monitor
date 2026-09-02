@@ -133,17 +133,32 @@ def trim_thermal_daily(state, now, retention_days=THERMAL_RETENTION_DAYS):
     ]
 
 
-def record_advisory_seen(state, key, published_utc, colour_code):
+def record_advisory_seen(state, key, published_utc, colour_code, eruption_id=None, ash_ceiling_ft=None):
     """Insert or update an advisory by its key (e.g. "2026/042"). Returns
     True if this is a new advisory, False if it was already present (its
-    stored fields are still refreshed, since colour code can be revised)."""
+    stored fields are still refreshed, since colour code can be revised).
+
+    eruption_id and ash_ceiling_ft exist only so a later run's Tier 1
+    escalation check (run.py) has something to compare the next advisory
+    against; both are optional and None when the advisory text didn't
+    parse one. Entries written before these fields existed have neither
+    key -- read them back with .get(), never index directly, so an old
+    entry reads as "no evidence" rather than a KeyError."""
     for advisory in state["advisories_seen"]:
         if advisory["key"] == key:
             advisory["published_utc"] = published_utc
             advisory["colour_code"] = colour_code
+            advisory["eruption_id"] = eruption_id
+            advisory["ash_ceiling_ft"] = ash_ceiling_ft
             return False
     state["advisories_seen"].append(
-        {"key": key, "published_utc": published_utc, "colour_code": colour_code}
+        {
+            "key": key,
+            "published_utc": published_utc,
+            "colour_code": colour_code,
+            "eruption_id": eruption_id,
+            "ash_ceiling_ft": ash_ceiling_ft,
+        }
     )
     return True
 

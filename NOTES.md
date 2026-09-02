@@ -165,3 +165,37 @@ just on a rare manual re-run.
 Not fixed here -- out of scope for this change, which only touched the
 cron schedule and Tier 1 batching. Recorded so it isn't mistaken for new
 code doing something unintended.
+
+## Deliberate deviation from spec: Tier 1 no longer emits one message per advisory
+
+SPEC.md says "Tier 1 emits on every occurrence, no rate limit." As of this
+change, a run that finds several new advisories still evaluates every one
+of them against the same firing conditions, but sends exactly one message
+for the run instead of one per advisory -- an explicit, scoped request
+("today a run that finds four new advisories sends four notifications. It
+should send one"). The firing condition itself is unchanged: any new
+advisory still counts, and every one of them is still recorded in state
+and named in the message (the newest in full, the rest by number). Only
+delivery volume changed, for the same reason the three-times-daily
+schedule exists: this repeats the earlier body-formatting deviation's
+shape (see "Deliberate deviation... Tier 1's body is no longer verbatim"
+above) -- content and firing logic untouched, only how it's delivered.
+
+The escalation/no-change framing added to the batched message
+("Escalation. N new advisories..." / "Still active, no change. N new
+advisories...") compares only the newest new advisory in the run against
+the most recent advisory *already in state before the run* -- not against
+other advisories within the same batch. Two consequences worth remembering
+when reading a real batched message:
+
+- `advisories_seen` entries written before this change only ever recorded
+  a colour code, never an eruption id or ash ceiling. A batch's direction
+  can come out SAME OR LESS even when an eruption id changes partway
+  through the batch (see the real 2026/107-110 fixture in
+  `tests/test_run.py`, where 109 introduces a new eruption id but state's
+  prior entry, 2026/106, has nothing to compare it against) -- there is
+  nothing in state for the change to be new *relative to*, only within the
+  batch itself, which this comparison intentionally does not scan.
+- No real advisory in state currently exercises the ash-ceiling-increase
+  escalation branch; it's covered by a synthetic fixture instead
+  (`test_classify_direction_escalates_on_ash_ceiling_increase`).

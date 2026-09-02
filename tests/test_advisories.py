@@ -165,6 +165,46 @@ def test_parse_wind_flight_level_in_no_ash_line_is_not_mistaken_for_ash():
     assert parsed["has_ash_cloud_forecast"] is False
 
 
+def test_parse_extracts_eruption_id_from_eruption_at_timestamp():
+    parsed = advisories.parse_advisory_text(WITH_ASH_TEXT)
+    assert parsed["eruption_id"] == "20260816/2015Z"
+
+
+def test_parse_eruption_id_none_when_details_has_no_at_timestamp():
+    text = (
+        "DTG: 20260828/0600Z\n"
+        "ADVISORY NR: 2026/1\n"
+        "AVIATION COLOUR CODE: ORANGE\n"
+        "ERUPTION DETAILS: ERUPTION CONTINUES\n"
+    )
+    parsed = advisories.parse_advisory_text(text)
+    assert parsed["eruption_id"] is None
+
+
+def test_parse_ash_ceiling_ft_from_real_ash_layer():
+    parsed = advisories.parse_advisory_text(WITH_ASH_TEXT)
+    assert parsed["ash_ceiling_ft"] == 16000  # SFC/FL160
+
+
+def test_parse_ash_ceiling_ft_none_when_no_real_ash_observed():
+    parsed = advisories.parse_advisory_text(NO_ASH_TEXT)
+    assert parsed["ash_ceiling_ft"] is None
+
+
+def test_parse_ash_ceiling_ft_ignores_wind_flight_levels_in_no_ash_line():
+    # Same regression as test_parse_wind_flight_level_in_no_ash_line_is_not_mistaken_for_ash,
+    # for the ceiling value rather than the has_ash_cloud_forecast flag.
+    text = (
+        "DTG: 20260818/0754Z\n"
+        "ADVISORY NR: 2026/1\n"
+        "AVIATION COLOUR CODE: ORANGE\n"
+        "OBS VA CLD: VA NOT IDENTIFIABLE FM SATELLITE DATA WIND FL100 290/20KT\n"
+        "FCST VA CLD +6 HR: NO VA EXP\n"
+    )
+    parsed = advisories.parse_advisory_text(text)
+    assert parsed["ash_ceiling_ft"] is None
+
+
 def test_parse_missing_required_fields_raises_source_error():
     with pytest.raises(advisories.AdvisorySourceError):
         advisories.parse_advisory_text("this is not a VAA at all")

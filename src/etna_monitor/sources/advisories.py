@@ -71,6 +71,19 @@ _LISTING_ENTRY_RE = re.compile(
 
 _NO_ASH_MARKERS = ("NO VA EXP", "NOT PROVIDED", "VA NOT IDENTIFIABLE")
 
+# The eruption timestamp inside ERUPTION DETAILS, e.g. "ERUPTION AT
+# 20260901/2100Z ASH EMISSION ONGOING" -> "20260901/2100Z". This is the
+# identifier Tier 1's escalation logic (run.py) treats as "a new eruption",
+# distinct from the colour code or the ash ceiling.
+_ERUPTION_AT_RE = re.compile(r"ERUPTION AT (\d{8}/\d{4}Z)")
+
+# Same layer-header shape as advisory_format.py's parser (a bottom of "SFC"
+# or "FLnnn", a slash, then a top flight level), duplicated deliberately
+# rather than imported: advisory_format.py is presentation-only and says so
+# in its own docstring ("no say in whether an alert fires"), so the value
+# used to decide escalation must not depend on it.
+_LAYER_TOP_RE = re.compile(r"\b(?:SFC|FL\d{3})/(?:FL)?(\d{3})\b")
+
 
 class AdvisorySourceError(Exception):
     """Raised when the VAAC advisory listing or an individual advisory's
@@ -137,8 +150,14 @@ def fetch_advisory_text(text_url, user_agent, timeout=DEFAULT_TIMEOUT, session=N
 
 def parse_advisory_text(raw_text):
     """Parse a raw VAA text body into a dict with the fields Tier 1 needs:
-    advisory_nr, published_utc, colour_code, eruption_details, obs_line,
-    forecast_lines, has_ash_cloud_forecast, raw_text.
+    advisory_nr, published_utc, colour_code, eruption_details, eruption_id,
+    obs_line, ash_ceiling_ft, forecast_lines, has_ash_cloud_forecast,
+    raw_text.
+
+    eruption_id and ash_ceiling_ft are None when they can't be parsed (no
+    "ERUPTION AT <timestamp>" pattern, or no currently observed ash) --
+    never a crash, and never a guessed value. Both exist for run.py's
+    escalation comparison, not for display.
 
     Raises AdvisorySourceError if the expected fields are missing (format
     changed) -- callers must not fall back to a silently empty result.
@@ -176,11 +195,28 @@ def parse_advisory_text(raw_text):
         "published_utc": _parse_dtg(fields["dtg"]),
         "colour_code": fields["colour_code"],
         "eruption_details": fields.get("eruption_details", ""),
+        "eruption_id": _parse_eruption_id(fields.get("eruption_details", "")),
         "obs_line": obs_line or "",
+        "ash_ceiling_ft": _parse_ash_ceiling_ft(obs_line or ""),
         "forecast_lines": forecast_lines,
         "has_ash_cloud_forecast": has_ash_cloud_forecast,
         "raw_text": raw_text,
     }
+
+
+def _parse_eruption_id(eruption_details):
+    match = _ERUPTION_AT_RE.search(eruption_details)
+    return match.group(1) if match else None
+
+
+def _parse_ash_ceiling_ft(obs_line):
+    """The top of the currently observed ash cloud, in feet, from OBS VA
+    CLD -- or None if that line describes no real ash (a wind line like
+    "WIND FL100 290/20KT" is not an ash layer, see _line_indicates_ash)."""
+    if not obs_line or not _line_indicates_ash(obs_line):
+        return None
+    tops_ft = [int(m.group(1)) * 100 for m in _LAYER_TOP_RE.finditer(obs_line)]
+    return max(tops_ft) if tops_ft else None
 
 
 def _line_indicates_ash(line):

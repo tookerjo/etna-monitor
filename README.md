@@ -28,10 +28,18 @@ did respond. A failed source is never silently reported as "quiet."
 
 ## Alerts
 
-**Tier 1 (practical)** fires on every occurrence, no rate limit: a new VAAC
-advisory, an aviation colour code change, or an advisory forecasting an ash
-cloud at a flight level. The message includes the advisory number and the
-full advisory text verbatim.
+**Tier 1 (practical)** fires on every new VAAC advisory, an aviation colour
+code change, or an advisory forecasting an ash cloud at a flight level --
+still no rate limit on what counts as a firing condition. What changed is
+delivery: a run that finds several new advisories sends exactly one
+message, not one per advisory. One new advisory: the message is the
+advisory formatted in full, same as always. More than one: the message
+opens with the direction of change (escalation, or still active with no
+change) and the count, then the newest advisory formatted in full, then a
+one-line list of the other advisory numbers -- their text is already in
+state and isn't resent. "Escalation" means the colour code moved up, the
+ash ceiling increased, or the advisory names a new eruption, compared
+against the most recent advisory already in state before the run.
 
 **Tier 2 (activity)** fires when the last 24 hours' seismic or thermal
 count crosses its threshold relative to its own trailing baseline. At most

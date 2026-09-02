@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from etna_monitor import run, state
+from etna_monitor import notify, run, state
 from etna_monitor.sources import advisories, seismic, thermal
 
 NOW = datetime(2026, 8, 28, 6, 15, tzinfo=timezone.utc)
@@ -62,6 +62,88 @@ ERUPTION DETAILS: ERUPTION CONTINUES
 OBS VA CLD: VA NOT IDENTIFIABLE FM SATELLITE DATA WIND FL100 290/20KT
 FCST VA CLD +6 HR: NO VA EXP
 NXT ADVISORY: NO FURTHER ADVISORIES="""
+
+# Real advisories fetched from vaac.meteo.fr on 2026-09-02, the run that
+# produced four Tier 1 alerts in one morning and motivated batching. 107
+# and 108 are identical apart from the advisory number -- their formatted
+# output is byte-identical. 109 carries a new eruption identifier
+# (20260901 vs 20260831 on 107/108); 110 repeats 109's eruption id with no
+# ceiling change. State's real prior entry at the time (2026/106) only
+# recorded a colour code, not eruption_id/ash_ceiling_ft, so these are
+# used below to prove the batch classifies as SAME OR LESS despite the
+# eruption id change on 109 -- state has nothing to compare 109 against.
+ADVISORY_107 = """VA ADVISORY
+DTG: 20260902/0220Z
+VAAC: TOULOUSE
+VOLCANO: ETNA 211060
+PSN: N3744 E01459
+AREA: SICILY VOLCANIC PROVINCE
+SOURCE ELEV: 3357M
+ADVISORY NR: 2026/107
+INFO SOURCE: SAT IMAGERY
+AVIATION COLOUR CODE: ORANGE
+ERUPTION DETAILS: ERUPTION AT 20260831/2100Z ASH EMISSION ONGOING
+OBS VA DTG: 02/0215Z
+OBS VA CLD: SFC/FL120 N3742 E01454 - N3753 E01500 - N3706 E01557 - N3653 E01548 - N3742 E01454 MOV SE 10KT
+FCST VA CLD +6 HR:NOT PROVIDED
+FCST VA CLD +12 HR:NOT PROVIDED
+FCST VA CLD +18 HR:NOT PROVIDED
+RMK:  THIN ASH CLOUD DETECTABLE ON SAT IMAGERY.
+NXT ADVISORY: NO LATER THAN 20260902/0300Z="""
+
+ADVISORY_108 = ADVISORY_107.replace("ADVISORY NR: 2026/107", "ADVISORY NR: 2026/108")
+
+ADVISORY_109 = """VA ADVISORY
+DTG: 20260902/0320Z
+VAAC: TOULOUSE
+VOLCANO: ETNA 211060
+PSN: N3744 E01459
+AREA: SICILY VOLCANIC PROVINCE
+SOURCE ELEV: 3357M
+ADVISORY NR: 2026/109
+INFO SOURCE: WEBCAM INGV, SAT IMAGERY
+AVIATION COLOUR CODE: ORANGE
+ERUPTION DETAILS: ERUPTION AT 20260901/2100Z ASH EMISSION ONGOING
+OBS VA DTG: 02/0304Z
+OBS VA CLD: SFC/FL120 N3748 E01457 - N3753 E01503 - N3700 E01606 - N3642 E01554 - N3748 E01457 MOV SE 10KT
+FCST VA CLD +6 HR: 02/0904Z SFC/FL120 N3745 E01500 - N3721 E01515 - N3723 E01503 - N3745 E01457 - N3745 E01500
+FCST VA CLD +12 HR: 02/1504Z SFC/FL120 N3745 E01457 - N3748 E01500 - N3738 E01515 - N3730 E01509 - N3745 E01457
+FCST VA CLD +18 HR: 02/2104Z SFC/FL120 N3745 E01457 - N3748 E01500 - N3738 E01515 - N3730 E01509 - N3745 E01457
+RMK:  ASH CLOUD DETECTABLE ON SAT IMAGERY AND WEBCAMS. DUE TO THE LOW INTENSITY  OF THIS ERUPTIVE EVENT, QVA NOT PROVIDED.
+NXT ADVISORY: NO LATER THAN 20260902/0900Z="""
+
+ADVISORY_110 = """VA ADVISORY
+DTG: 20260902/0900Z
+VAAC: TOULOUSE
+VOLCANO: ETNA 211060
+PSN: N3744 E01459
+AREA: SICILY VOLCANIC PROVINCE
+SOURCE ELEV: 3357M
+ADVISORY NR: 2026/110
+INFO SOURCE: WEBCAM INGV, SAT IMAGERY
+AVIATION COLOUR CODE: ORANGE
+ERUPTION DETAILS: ERUPTION AT 20260901/2100Z WEAK ASH EMISSION
+OBS VA DTG: 02/0900Z
+OBS VA CLD: SFC/FL120 N3748 E01454 - N3751 E01503 - N3721 E01521 - N3712 E01512 - N3748 E01454 MOV SE 25KT
+FCST VA CLD +6 HR: 02/1500Z NO VA EXP
+FCST VA CLD +12 HR: 02/2100Z NO VA EXP
+FCST VA CLD +18 HR: 03/0300Z NO VA EXP
+RMK:  THIN PLUME DETECTABLE ON WEBCAM. WEAK ASH  EMISSION IN THE VICINITY OF THE VOLCANO. DUE TO  THE LOW INTENSITY OF THIS ERUPTIVE EVENT, QVA DO  NOT SHOW ANY SIGNIFICANT ASH CLOUD AND WILL NOT  BE PROVIDED.
+NXT ADVISORY: WILL BE ISSUED BY 20260902/1500Z="""
+
+
+def _build_tier1_advisories(state_dict, raw_texts):
+    """Mirror run_once's own loop: parse each raw text and stamp on the
+    colour_changed/previous_colour_code fields format_tier1_message needs,
+    tracking previous colour sequentially exactly as run_once does."""
+    previous_colour = run.latest_known_colour_code(state_dict)
+    built = []
+    for raw in raw_texts:
+        parsed = advisories.parse_advisory_text(raw)
+        colour_changed = previous_colour is not None and parsed["colour_code"] != previous_colour
+        built.append({**parsed, "colour_changed": colour_changed, "previous_colour_code": previous_colour})
+        previous_colour = parsed["colour_code"]
+    return built
 
 
 class FakeResponse:
@@ -347,6 +429,154 @@ def test_format_tier1_message_includes_formatted_body():
     assert "N3744 E01459" not in message  # coordinate polygons must not leak through
 
 
+def test_latest_known_advisory_summary_empty_state():
+    assert run.latest_known_advisory_summary(state.default_state()) is None
+
+
+def test_latest_known_advisory_summary_reads_missing_fields_as_none():
+    # An entry written before eruption_id/ash_ceiling_ft existed in the
+    # schema (e.g. the real 2026/106 in state at the time of the 107-110
+    # batch) has neither key.
+    state_dict = state.default_state()
+    state.record_advisory_seen(state_dict, "2026/106", "2026-09-01T09:06:00Z", "ORANGE")
+    assert run.latest_known_advisory_summary(state_dict) == {
+        "colour_code": "ORANGE",
+        "eruption_id": None,
+        "ash_ceiling_ft": None,
+    }
+
+
+# --- classify_direction ---
+
+
+def test_classify_direction_escalates_on_colour_code_increase():
+    previous = {"colour_code": "YELLOW", "eruption_id": None, "ash_ceiling_ft": None}
+    newest = {"colour_code": "RED", "eruption_id": None, "ash_ceiling_ft": None}
+    assert run.classify_direction(previous, newest) == "escalation"
+
+
+def test_classify_direction_same_or_less_on_colour_code_decrease():
+    previous = {"colour_code": "RED", "eruption_id": None, "ash_ceiling_ft": None}
+    newest = {"colour_code": "ORANGE", "eruption_id": None, "ash_ceiling_ft": None}
+    assert run.classify_direction(previous, newest) == "same_or_less"
+
+
+def test_classify_direction_escalates_on_new_eruption_id():
+    previous = {"colour_code": "ORANGE", "eruption_id": "20260831/2100Z", "ash_ceiling_ft": None}
+    newest = {"colour_code": "ORANGE", "eruption_id": "20260901/2100Z", "ash_ceiling_ft": None}
+    assert run.classify_direction(previous, newest) == "escalation"
+
+
+def test_classify_direction_escalates_on_ash_ceiling_increase():
+    # Synthetic: no real advisory currently in state exercises this branch.
+    previous = {"colour_code": "ORANGE", "eruption_id": "20260901/2100Z", "ash_ceiling_ft": 12000}
+    newest = {"colour_code": "ORANGE", "eruption_id": "20260901/2100Z", "ash_ceiling_ft": 18000}
+    assert run.classify_direction(previous, newest) == "escalation"
+
+
+def test_classify_direction_no_ceiling_change_is_same_or_less():
+    previous = {"colour_code": "ORANGE", "eruption_id": "20260901/2100Z", "ash_ceiling_ft": 12000}
+    newest = {"colour_code": "ORANGE", "eruption_id": "20260901/2100Z", "ash_ceiling_ft": 12000}
+    assert run.classify_direction(previous, newest) == "same_or_less"
+
+
+def test_classify_direction_no_prior_advisory_is_same_or_less():
+    newest = {"colour_code": "ORANGE", "eruption_id": "20260901/2100Z", "ash_ceiling_ft": 12000}
+    assert run.classify_direction(None, newest) == "same_or_less"
+
+
+def test_classify_direction_missing_colour_code_on_either_side_never_crashes_or_escalates():
+    previous = {"colour_code": None, "eruption_id": "X", "ash_ceiling_ft": None}
+    newest = {"colour_code": "RED", "eruption_id": "X", "ash_ceiling_ft": None}
+    assert run.classify_direction(previous, newest) == "same_or_less"
+
+    previous = {"colour_code": "GREEN", "eruption_id": "X", "ash_ceiling_ft": None}
+    newest = {"colour_code": "", "eruption_id": "X", "ash_ceiling_ft": None}
+    assert run.classify_direction(previous, newest) == "same_or_less"
+
+
+def test_classify_direction_unparseable_colour_code_never_escalates():
+    previous = {"colour_code": "ORANGE", "eruption_id": "X", "ash_ceiling_ft": None}
+    newest = {"colour_code": "UNKNOWN COLOUR", "eruption_id": "X", "ash_ceiling_ft": None}
+    assert run.classify_direction(previous, newest) == "same_or_less"
+
+
+def test_classify_direction_on_the_real_107_110_batch_is_same_or_less():
+    # State at the time only knew 2026/106's colour code -- not an
+    # eruption_id or ash_ceiling_ft to compare against -- so even though
+    # 109 carries a new eruption id relative to 107/108, there is nothing
+    # in *state* for it to be new relative to.
+    state_dict = state.default_state()
+    state.record_advisory_seen(state_dict, "2026/106", "2026-09-01T09:06:00Z", "ORANGE")
+    tier1_advisories = _build_tier1_advisories(
+        state_dict, [ADVISORY_107, ADVISORY_108, ADVISORY_109, ADVISORY_110]
+    )
+    assert tier1_advisories[1]["eruption_id"] == "20260831/2100Z"  # 108
+    assert tier1_advisories[2]["eruption_id"] == "20260901/2100Z"  # 109: new id
+
+    previous = run.latest_known_advisory_summary(state_dict)
+    newest = tier1_advisories[-1]
+    direction = run.classify_direction(
+        previous,
+        {
+            "colour_code": newest["colour_code"],
+            "eruption_id": newest["eruption_id"],
+            "ash_ceiling_ft": newest["ash_ceiling_ft"],
+        },
+    )
+    assert direction == "same_or_less"
+
+
+# --- format_tier1_batch_message ---
+
+
+def test_format_tier1_batch_message_single_advisory_matches_todays_rendering():
+    advisory = {
+        "advisory_nr": "2026/200",
+        "colour_code": "RED",
+        "eruption_details": "x",
+        "obs_line": "",
+        "forecast_lines": [],
+        "has_ash_cloud_forecast": True,
+        "raw_text": VAAC_TEXT_SAMPLE,
+        "colour_changed": True,
+        "previous_colour_code": "ORANGE",
+    }
+    assert run.format_tier1_batch_message("escalation", True, [advisory]) == run.format_tier1_message(advisory)
+
+
+def test_format_tier1_batch_message_byte_identical_advisories_still_one_message():
+    # 107 and 108 differ only in the ADVISORY NR line, which
+    # advisory_format never renders -- their formatted *bodies* are
+    # byte-identical (their full run.format_tier1_message output still
+    # differs by advisory number, since that's stated in the header line
+    # format_tier1_message adds on top of the formatted body).
+    state_dict = state.default_state()
+    tier1_advisories = _build_tier1_advisories(state_dict, [ADVISORY_107, ADVISORY_108])
+    assert notify.format_tier1_body(ADVISORY_107) == notify.format_tier1_body(ADVISORY_108)
+
+    message = run.format_tier1_batch_message("same_or_less", True, tier1_advisories)
+    assert message.count("TIER 1 -- Etna advisory") == 1  # the formatted body appears once, not twice
+    assert "2026/108" in message  # the newest, formatted in full
+    assert "Other advisories this run: 2026/107" in message
+    assert message.startswith("Still active, no change. 2 new advisories since last run.")
+
+
+def test_format_tier1_batch_message_escalation_header():
+    state_dict = state.default_state()
+    tier1_advisories = _build_tier1_advisories(state_dict, [ADVISORY_107, ADVISORY_109])
+    message = run.format_tier1_batch_message("escalation", True, tier1_advisories)
+    assert message.startswith("Escalation. 2 new advisories since last run.")
+
+
+def test_format_tier1_batch_message_no_baseline_says_new_not_no_change():
+    state_dict = state.default_state()
+    tier1_advisories = _build_tier1_advisories(state_dict, [ADVISORY_109, ADVISORY_110])
+    message = run.format_tier1_batch_message("same_or_less", False, tier1_advisories)
+    assert "no change" not in message.lower()
+    assert message.startswith("New baseline, nothing to compare against yet. 2 new advisories since last run.")
+
+
 def test_format_tier2_message_only_mentions_fired_signals():
     seismic_result = thresholds_result(fired=True, recent_count=6, baseline_mean=1.0, baseline_days=10, min_count=5, min_ratio=2.5)
     thermal_result = thresholds_result(fired=False, recent_count=1, baseline_mean=10.0, baseline_days=10, min_count=5, min_ratio=3.0)
@@ -455,6 +685,58 @@ def test_run_once_suppresses_tier2_when_tier1_fires():
     summary = run.run_once(CONFIG, state_dict, NOW, "test-map-key", session=session, dry_run=True)
     assert summary["tier1_fired"] is True
     assert summary["tier2_fired"] is False
+
+
+def _two_new_advisory_session():
+    """A session whose listing carries two new advisories (the real,
+    byte-identical-once-formatted 2026/107 and 2026/108) so run_once has
+    something to batch."""
+    session = RoutingSession()
+    session.set(seismic.DEFAULT_BASE_URL, FakeResponse(200, INGV_SAMPLE))
+    session.set(thermal.DEFAULT_BASE_URL, FakeResponse(200, FIRMS_SAMPLE))
+    session.set("https://ntfy.sh/", FakeResponse(200, "{}"))
+    listing = """
+<li><a href="https://vaac.meteo.fr/advisory/2026/211060_20260902022019/211060_20260902022019/">
+  ETNA.108 - 2026-09-02 02:20 utc
+</a>
+</li>
+<li><a href="https://vaac.meteo.fr/advisory/2026/211060_20260902022016/211060_20260902022016/">
+  ETNA.107 - 2026-09-02 02:20 utc
+</a>
+</li>
+"""
+    session.set("https://vaac.meteo.fr/volcanoes/", FakeResponse(200, listing))
+    session.set(
+        "https://vaac.meteo.fr/advisory/2026/211060_20260902022019/211060_20260902022019_vaa.txt",
+        FakeResponse(200, ADVISORY_108),
+    )
+    session.set(
+        "https://vaac.meteo.fr/advisory/2026/211060_20260902022016/211060_20260902022016_vaa.txt",
+        FakeResponse(200, ADVISORY_107),
+    )
+    return session
+
+
+def test_run_once_batches_multiple_new_advisories_into_one_tier1_message():
+    session = _two_new_advisory_session()
+    state_dict = state.default_state()
+    summary = run.run_once(CONFIG, state_dict, NOW, "test-map-key", session=session, dry_run=True)
+
+    assert len(summary["new_advisories"]) == 2
+    tier1_messages = [body for title, body in summary["messages"] if title == "Etna Monitor -- Tier 1"]
+    assert len(tier1_messages) == 1  # one message, not one per advisory
+    message = tier1_messages[0]
+    assert message.startswith("New baseline, nothing to compare against yet. 2 new advisories since last run.")
+    assert "2026/108" in message  # newest, formatted in full
+    assert "Other advisories this run: 2026/107" in message
+    assert message.count("TIER 1 -- Etna advisory") == 1  # 107 and 108's bodies are byte-identical; shown once
+
+
+def test_run_once_alerts_emitted_counts_messages_not_advisories():
+    session = _two_new_advisory_session()
+    state_dict = state.default_state()
+    run.run_once(CONFIG, state_dict, NOW, "test-map-key", session=session, dry_run=False)
+    assert state_dict["runs"][-1]["alerts_emitted"] == 1
 
 
 def test_run_once_no_new_advisories_allows_tier2():
