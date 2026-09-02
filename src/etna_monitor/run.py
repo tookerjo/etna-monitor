@@ -6,12 +6,12 @@ Commands (see README for the full contract):
     python -m etna_monitor.run --backfill N     populate N days of history
     python -m etna_monitor.run --test-notify    send one message through every channel
 
-Known simplification: Tier 2's "at most once per day" is enforced by the
-job running once per day under the default schedule, not by a same-day
-dedup flag in state. A manual workflow_dispatch re-run later the same day
-could in principle emit a second Tier 2 alert if conditions still cross
-threshold. Tier 1 has no such limit (it fires on every new advisory
-regardless), so this only affects the seismic/thermal activity signal.
+Known simplification: Tier 2's "at most once per day" is not enforced by a
+same-day dedup flag in state -- it relies entirely on run cadence. The
+default schedule now runs three times a day (see .github/workflows/monitor.yml),
+so a seismic or thermal signal that stays above threshold across more than
+one run in the same day emits Tier 2 again at each of those runs, not just
+once. See NOTES.md.
 """
 
 import argparse

@@ -1,10 +1,10 @@
 name: etna-monitor
 
-# Daily scheduled run. Times are UTC.
-# 06:15 UTC is roughly 08:15 in Sicily, before the day's plans are set.
+# Three scheduled runs a day. Times are UTC.
+# 05:15/11:15/17:15 UTC land at roughly 07:15, 13:15 and 19:15 in Sicily.
 on:
   schedule:
-    - cron: "15 6 * * *"
+    - cron: "15 5,11,17 * * *"
   workflow_dispatch:
     inputs:
       dry_run:

@@ -1,8 +1,9 @@
 # Etna Monitor
 
-A scheduled job that reads three public data sources about Mount Etna once
-per day, compares them against stored history, and sends a notification
-only when something crosses a threshold. It is silent on ordinary days.
+A scheduled job that reads three public data sources about Mount Etna up to
+three times a day, compares them against stored history, and sends a
+notification only when something crosses a threshold. It is silent on
+ordinary days.
 
 **This is not a forecast tool.** It reports observed state and change in
 observed state — nothing here computes a probability of eruption or
@@ -111,10 +112,11 @@ services actually return.
 
 ## Known limitations
 
-- **Tier 2's "at most once per day"** relies on the job running once daily
-  under the default cron schedule, not a same-day dedup flag in state. A
-  manual `workflow_dispatch` re-run later the same day could in principle
-  emit a second Tier 2 alert if conditions still cross threshold.
+- **Tier 2's "at most once per day"** is not enforced by a same-day dedup
+  flag in state -- it relies on run cadence. The schedule now runs three
+  times a day, so a signal that stays above threshold across more than one
+  run in the same day emits Tier 2 again at each of those runs, not just
+  once. See `NOTES.md`.
 - **Thermal detections are lumpy and cloud-dependent.** A drop to zero can
   mean cloud cover, not quiet — every thermal number is reported alongside
   the count of days with real data in its baseline window

@@ -150,3 +150,18 @@ and lowering the floor below 5 would fire on ordinary weeks. Verified
 
 Increasing seismic sensitivity would require a different INGV data
 product, not a different query against this endpoint.
+
+## Risk surfaced by moving to three runs a day: Tier 2 can now repeat same-day
+
+The schedule changed from one run a day to three (05:15/11:15/17:15 UTC).
+Tier 2's "at most once per day" was always enforced only by run cadence, not
+a same-day dedup flag in state (`run.py`'s own docstring called this out as
+a known simplification, previously only reachable via a manual
+`workflow_dispatch` re-run). At three runs a day, a seismic or thermal
+signal that stays above threshold across consecutive runs will now emit
+Tier 2 at each of those runs in the ordinary course of the schedule, not
+just on a rare manual re-run.
+
+Not fixed here -- out of scope for this change, which only touched the
+cron schedule and Tier 1 batching. Recorded so it isn't mistaken for new
+code doing something unintended.
