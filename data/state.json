@@ -292,10 +292,31 @@
       "eruption_id": "20260907/1845Z",
       "key": "2026/134",
       "published_utc": "2026-09-08T10:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": 14000,
+      "colour_code": "ORANGE",
+      "eruption_id": "20260908/2000Z",
+      "key": "2026/135",
+      "published_utc": "2026-09-08T21:39:00Z"
+    },
+    {
+      "ash_ceiling_ft": 15000,
+      "colour_code": "ORANGE",
+      "eruption_id": "20260908/2000Z",
+      "key": "2026/136",
+      "published_utc": "2026-09-08T22:02:00Z"
+    },
+    {
+      "ash_ceiling_ft": 15000,
+      "colour_code": "ORANGE",
+      "eruption_id": "20260909/0415Z",
+      "key": "2026/137",
+      "published_utc": "2026-09-09T04:16:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-04T19:38:02Z",
-  "last_run_utc": "2026-09-08T19:55:34Z",
+  "last_run_utc": "2026-09-09T09:49:24Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -546,6 +567,16 @@
         "thermal": true
       },
       "timestamp": "2026-09-08T19:55:34Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-09-09T09:49:24Z"
     }
   ],
   "schema_version": 1,
@@ -710,6 +741,22 @@
       "longitude": 14.993,
       "magnitude": 1.9,
       "origin_time": "2026-09-05T09:29:25.270000Z"
+    },
+    {
+      "depth": 3.5,
+      "event_id": "47107672",
+      "latitude": 37.644,
+      "longitude": 14.932,
+      "magnitude": 1.7,
+      "origin_time": "2026-09-09T01:42:27.580000Z"
+    },
+    {
+      "depth": 2.1,
+      "event_id": "47108172",
+      "latitude": 37.645,
+      "longitude": 14.943,
+      "magnitude": 1.5,
+      "origin_time": "2026-09-09T04:18:48.720000Z"
     }
   ],
   "thermal_daily": [
@@ -916,6 +963,11 @@
     {
       "date": "2026-09-08",
       "detection_count": 5,
+      "detections_available": true
+    },
+    {
+      "date": "2026-09-09",
+      "detection_count": 4,
       "detections_available": true
     }
   ]
