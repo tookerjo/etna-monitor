@@ -355,10 +355,17 @@
       "eruption_id": "20260908/2000Z",
       "key": "2026/143",
       "published_utc": "2026-09-10T10:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": 13000,
+      "colour_code": "RED",
+      "eruption_id": "20260908/2000Z",
+      "key": "2026/144",
+      "published_utc": "2026-09-10T16:00:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-04T19:38:02Z",
-  "last_run_utc": "2026-09-10T15:00:01Z",
+  "last_run_utc": "2026-09-10T19:43:45Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -659,6 +666,16 @@
         "thermal": true
       },
       "timestamp": "2026-09-10T15:00:01Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-09-10T19:43:45Z"
     }
   ],
   "schema_version": 1,
