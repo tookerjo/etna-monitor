@@ -446,10 +446,17 @@
       "eruption_id": "20260914/0240Z",
       "key": "2026/156",
       "published_utc": "2026-09-15T04:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": null,
+      "colour_code": "RED",
+      "eruption_id": "20260914/0240Z",
+      "key": "2026/157",
+      "published_utc": "2026-09-15T10:00:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-11T19:44:45Z",
-  "last_run_utc": "2026-09-15T10:07:19Z",
+  "last_run_utc": "2026-09-15T15:34:49Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -890,19 +897,21 @@
         "thermal": true
       },
       "timestamp": "2026-09-15T10:07:19Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-09-15T15:34:49Z"
     }
   ],
   "schema_version": 1,
   "seismic_coverage_start_date": "2026-07-29",
   "seismic_events": [
-    {
-      "depth": 10.0,
-      "event_id": "46736242",
-      "latitude": 37.668,
-      "longitude": 15.086,
-      "magnitude": 1.3,
-      "origin_time": "2026-08-01T10:51:47.010000Z"
-    },
     {
       "depth": 0.0,
       "event_id": "46755432",
