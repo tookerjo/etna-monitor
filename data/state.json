@@ -432,10 +432,24 @@
       "eruption_id": "20260914/0240Z",
       "key": "2026/154",
       "published_utc": "2026-09-14T16:01:00Z"
+    },
+    {
+      "ash_ceiling_ft": null,
+      "colour_code": "RED",
+      "eruption_id": "20260914/0240Z",
+      "key": "2026/155",
+      "published_utc": "2026-09-14T22:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": null,
+      "colour_code": "RED",
+      "eruption_id": "20260914/0240Z",
+      "key": "2026/156",
+      "published_utc": "2026-09-15T04:00:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-11T19:44:45Z",
-  "last_run_utc": "2026-09-14T20:57:10Z",
+  "last_run_utc": "2026-09-15T10:07:19Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -866,6 +880,16 @@
         "thermal": true
       },
       "timestamp": "2026-09-14T20:57:10Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-09-15T10:07:19Z"
     }
   ],
   "schema_version": 1,
@@ -1073,11 +1097,6 @@
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-07-31",
-      "detection_count": 6,
-      "detections_available": true
-    },
     {
       "date": "2026-08-01",
       "detection_count": 10,
@@ -1301,6 +1320,11 @@
     {
       "date": "2026-09-14",
       "detection_count": 1,
+      "detections_available": true
+    },
+    {
+      "date": "2026-09-15",
+      "detection_count": 0,
       "detections_available": true
     }
   ]
