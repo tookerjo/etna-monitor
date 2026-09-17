@@ -509,10 +509,17 @@
       "eruption_id": "20260917/0344Z",
       "key": "2026/166",
       "published_utc": "2026-09-17T04:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": 18000,
+      "colour_code": "RED",
+      "eruption_id": "20260916/1800Z",
+      "key": "2026/167",
+      "published_utc": "2026-09-17T09:57:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-11T19:44:45Z",
-  "last_run_utc": "2026-09-17T10:02:01Z",
+  "last_run_utc": "2026-09-17T15:33:29Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -1013,6 +1020,16 @@
         "thermal": true
       },
       "timestamp": "2026-09-17T10:02:01Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": false
+      },
+      "timestamp": "2026-09-17T15:33:29Z"
     }
   ],
   "schema_version": 1,
