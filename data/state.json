@@ -495,10 +495,24 @@
       "eruption_id": "20260914/0240Z",
       "key": "2026/164",
       "published_utc": "2026-09-16T18:58:00Z"
+    },
+    {
+      "ash_ceiling_ft": 15000,
+      "colour_code": "RED",
+      "eruption_id": "20260914/0240Z",
+      "key": "2026/165",
+      "published_utc": "2026-09-16T22:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": 15000,
+      "colour_code": "RED",
+      "eruption_id": "20260917/0344Z",
+      "key": "2026/166",
+      "published_utc": "2026-09-17T04:00:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-11T19:44:45Z",
-  "last_run_utc": "2026-09-16T20:09:47Z",
+  "last_run_utc": "2026-09-17T10:02:01Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -989,19 +1003,21 @@
         "thermal": false
       },
       "timestamp": "2026-09-16T20:09:47Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-09-17T10:02:01Z"
     }
   ],
   "schema_version": 1,
   "seismic_coverage_start_date": "2026-07-29",
   "seismic_events": [
-    {
-      "depth": 0.0,
-      "event_id": "46755432",
-      "latitude": 37.742,
-      "longitude": 14.997,
-      "magnitude": 1.7,
-      "origin_time": "2026-08-03T07:22:36.850000Z"
-    },
     {
       "depth": 7.2,
       "event_id": "46849322",
@@ -1188,11 +1204,6 @@
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-08-02",
-      "detection_count": 13,
-      "detections_available": true
-    },
     {
       "date": "2026-08-03",
       "detection_count": 7,
@@ -1416,6 +1427,11 @@
     {
       "date": "2026-09-16",
       "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-09-17",
+      "detection_count": 2,
       "detections_available": true
     }
   ]
