@@ -547,7 +547,7 @@
     }
   ],
   "last_heartbeat_utc": "2026-09-19T09:34:00Z",
-  "last_run_utc": "2026-09-20T09:50:25Z",
+  "last_run_utc": "2026-09-20T14:42:47Z",
   "runs": [
     {
       "alerts_emitted": 20,
@@ -1138,6 +1138,16 @@
         "thermal": true
       },
       "timestamp": "2026-09-20T09:50:25Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": false
+      },
+      "timestamp": "2026-09-20T14:42:47Z"
     }
   ],
   "schema_version": 1,
