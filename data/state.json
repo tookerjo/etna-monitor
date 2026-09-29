@@ -691,21 +691,32 @@
       "eruption_id": "20260924/0520Z",
       "key": "2026/192",
       "published_utc": "2026-09-28T16:48:00Z"
+    },
+    {
+      "ash_ceiling_ft": 14000,
+      "colour_code": "RED",
+      "eruption_id": "20260929/0525Z",
+      "key": "2026/193",
+      "published_utc": "2026-09-29T05:36:00Z"
+    },
+    {
+      "ash_ceiling_ft": 14000,
+      "colour_code": "RED",
+      "eruption_id": "20260929/0525Z",
+      "key": "2026/194",
+      "published_utc": "2026-09-29T06:15:00Z"
+    },
+    {
+      "ash_ceiling_ft": 14000,
+      "colour_code": "ORANGE",
+      "eruption_id": "20260929/0525Z",
+      "key": "2026/195",
+      "published_utc": "2026-09-29T08:11:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-09-26T09:54:21Z",
-  "last_run_utc": "2026-09-28T22:33:27Z",
+  "last_run_utc": "2026-09-29T11:23:27Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-09-08T19:55:34Z"
-    },
     {
       "alerts_emitted": 1,
       "dry_run": false,
@@ -1295,43 +1306,21 @@
         "thermal": true
       },
       "timestamp": "2026-09-28T22:33:27Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-09-29T11:23:27Z"
     }
   ],
   "schema_version": 1,
   "seismic_coverage_start_date": "2026-07-29",
   "seismic_events": [
-    {
-      "depth": 1.2,
-      "event_id": "46891682",
-      "latitude": 37.832,
-      "longitude": 15.07,
-      "magnitude": 3.9,
-      "origin_time": "2026-08-15T10:24:08.910000Z"
-    },
-    {
-      "depth": 0.8,
-      "event_id": "46892022",
-      "latitude": 37.81,
-      "longitude": 15.065,
-      "magnitude": 1.4,
-      "origin_time": "2026-08-15T10:40:52.920000Z"
-    },
-    {
-      "depth": 0.7,
-      "event_id": "46892352",
-      "latitude": 37.81,
-      "longitude": 15.056,
-      "magnitude": 1.1,
-      "origin_time": "2026-08-15T10:45:24.800000Z"
-    },
-    {
-      "depth": 0.9,
-      "event_id": "46892052",
-      "latitude": 37.816,
-      "longitude": 15.059,
-      "magnitude": 1.1,
-      "origin_time": "2026-08-15T10:49:39.570000Z"
-    },
     {
       "depth": 2.8,
       "event_id": "46892992",
@@ -1518,11 +1507,6 @@
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-08-14",
-      "detection_count": 20,
-      "detections_available": true
-    },
     {
       "date": "2026-08-15",
       "detection_count": 29,
@@ -1745,6 +1729,11 @@
     },
     {
       "date": "2026-09-28",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-09-29",
       "detection_count": 0,
       "detections_available": true
     }
