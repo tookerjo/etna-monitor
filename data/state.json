@@ -757,18 +757,8 @@
     }
   ],
   "last_heartbeat_utc": "2026-10-03T10:26:15Z",
-  "last_run_utc": "2026-10-06T12:03:14Z",
+  "last_run_utc": "2026-10-06T21:39:17Z",
   "runs": [
-    {
-      "alerts_emitted": 1,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-09-15T10:07:19Z"
-    },
     {
       "alerts_emitted": 1,
       "dry_run": false,
@@ -1358,6 +1348,16 @@
         "thermal": true
       },
       "timestamp": "2026-10-06T12:03:14Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-10-06T21:39:17Z"
     }
   ],
   "schema_version": 1,
