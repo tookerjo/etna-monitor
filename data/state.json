@@ -756,19 +756,9 @@
       "published_utc": "2026-09-30T16:00:00Z"
     }
   ],
-  "last_heartbeat_utc": "2026-10-03T10:26:15Z",
-  "last_run_utc": "2026-10-09T21:42:30Z",
+  "last_heartbeat_utc": "2026-10-10T11:12:19Z",
+  "last_run_utc": "2026-10-10T11:12:19Z",
   "runs": [
-    {
-      "alerts_emitted": 1,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": false
-      },
-      "timestamp": "2026-09-17T15:33:29Z"
-    },
     {
       "alerts_emitted": 1,
       "dry_run": false,
@@ -1358,6 +1348,16 @@
         "thermal": true
       },
       "timestamp": "2026-10-09T21:42:30Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-10-10T11:12:19Z"
     }
   ],
   "schema_version": 1,
@@ -1549,11 +1549,6 @@
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-08-25",
-      "detection_count": 4,
-      "detections_available": true
-    },
     {
       "date": "2026-08-26",
       "detection_count": 0,
@@ -1776,6 +1771,11 @@
     },
     {
       "date": "2026-10-09",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-10-10",
       "detection_count": 0,
       "detections_available": true
     }
