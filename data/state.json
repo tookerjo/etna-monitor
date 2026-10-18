@@ -757,18 +757,8 @@
     }
   ],
   "last_heartbeat_utc": "2026-10-17T14:13:33Z",
-  "last_run_utc": "2026-10-18T09:39:32Z",
+  "last_run_utc": "2026-10-18T14:37:02Z",
   "runs": [
-    {
-      "alerts_emitted": 1,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-09-24T20:31:22Z"
-    },
     {
       "alerts_emitted": 1,
       "dry_run": false,
@@ -1358,6 +1348,16 @@
         "thermal": false
       },
       "timestamp": "2026-10-18T09:39:32Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-10-18T14:37:02Z"
     }
   ],
   "schema_version": 1,
@@ -1658,6 +1658,54 @@
       "longitude": 14.878,
       "magnitude": 1.1,
       "origin_time": "2026-10-18T07:06:10.270000Z"
+    },
+    {
+      "depth": 4.2,
+      "event_id": "47567862",
+      "latitude": 37.739,
+      "longitude": 14.874,
+      "magnitude": 1.2,
+      "origin_time": "2026-10-18T09:52:58.330000Z"
+    },
+    {
+      "depth": 5.8,
+      "event_id": "47568052",
+      "latitude": 37.739,
+      "longitude": 14.877,
+      "magnitude": 2.5,
+      "origin_time": "2026-10-18T10:02:16.000000Z"
+    },
+    {
+      "depth": 5.7,
+      "event_id": "47568132",
+      "latitude": 37.738,
+      "longitude": 14.871,
+      "magnitude": 1.4,
+      "origin_time": "2026-10-18T10:03:15.870000Z"
+    },
+    {
+      "depth": 5.4,
+      "event_id": "47568802",
+      "latitude": 37.736,
+      "longitude": 14.876,
+      "magnitude": 1.9,
+      "origin_time": "2026-10-18T11:07:53.080000Z"
+    },
+    {
+      "depth": 5.1,
+      "event_id": "47568792",
+      "latitude": 37.742,
+      "longitude": 14.883,
+      "magnitude": 1.8,
+      "origin_time": "2026-10-18T11:08:57.540000Z"
+    },
+    {
+      "depth": 4.5,
+      "event_id": "47569262",
+      "latitude": 37.742,
+      "longitude": 14.879,
+      "magnitude": 1.2,
+      "origin_time": "2026-10-18T12:21:38.600000Z"
     }
   ],
   "thermal_daily": [
@@ -1889,7 +1937,7 @@
     {
       "date": "2026-10-18",
       "detection_count": 0,
-      "detections_available": false
+      "detections_available": true
     }
   ]
 }
