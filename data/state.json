@@ -757,18 +757,8 @@
     }
   ],
   "last_heartbeat_utc": "2026-10-17T14:13:33Z",
-  "last_run_utc": "2026-10-17T19:26:07Z",
+  "last_run_utc": "2026-10-18T09:39:32Z",
   "runs": [
-    {
-      "alerts_emitted": 1,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-09-24T15:49:40Z"
-    },
     {
       "alerts_emitted": 1,
       "dry_run": false,
@@ -1358,6 +1348,16 @@
         "thermal": true
       },
       "timestamp": "2026-10-17T19:26:07Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": false
+      },
+      "timestamp": "2026-10-18T09:39:32Z"
     }
   ],
   "schema_version": 1,
@@ -1562,14 +1562,105 @@
       "longitude": 15.143,
       "magnitude": 1.2,
       "origin_time": "2026-10-15T15:31:55.730000Z"
+    },
+    {
+      "depth": 4.9,
+      "event_id": "47564732",
+      "latitude": 37.738,
+      "longitude": 14.877,
+      "magnitude": 2.1,
+      "origin_time": "2026-10-18T02:22:32.130000Z"
+    },
+    {
+      "depth": 6.9,
+      "event_id": "47564742",
+      "latitude": 37.738,
+      "longitude": 14.885,
+      "magnitude": 2.5,
+      "origin_time": "2026-10-18T02:27:39.480000Z"
+    },
+    {
+      "depth": 5.1,
+      "event_id": "47565042",
+      "latitude": 37.742,
+      "longitude": 14.879,
+      "magnitude": 1.4,
+      "origin_time": "2026-10-18T02:54:44.060000Z"
+    },
+    {
+      "depth": 5.9,
+      "event_id": "47565642",
+      "latitude": 37.738,
+      "longitude": 14.886,
+      "magnitude": 3.2,
+      "origin_time": "2026-10-18T04:20:46.870000Z"
+    },
+    {
+      "depth": 7.2,
+      "event_id": "47565782",
+      "latitude": 37.734,
+      "longitude": 14.867,
+      "magnitude": 1.0,
+      "origin_time": "2026-10-18T04:33:26.810000Z"
+    },
+    {
+      "depth": 5.3,
+      "event_id": "47565772",
+      "latitude": 37.742,
+      "longitude": 14.876,
+      "magnitude": 1.0,
+      "origin_time": "2026-10-18T04:37:07.650000Z"
+    },
+    {
+      "depth": 7.8,
+      "event_id": "47565912",
+      "latitude": 37.732,
+      "longitude": 14.862,
+      "magnitude": 1.2,
+      "origin_time": "2026-10-18T05:06:55.820000Z"
+    },
+    {
+      "depth": 5.9,
+      "event_id": "47565922",
+      "latitude": 37.737,
+      "longitude": 14.869,
+      "magnitude": 1.0,
+      "origin_time": "2026-10-18T05:10:33.220000Z"
+    },
+    {
+      "depth": 6.3,
+      "event_id": "47565882",
+      "latitude": 37.732,
+      "longitude": 14.869,
+      "magnitude": 1.1,
+      "origin_time": "2026-10-18T05:18:30.210000Z"
+    },
+    {
+      "depth": 5.8,
+      "event_id": "47566092",
+      "latitude": 37.737,
+      "longitude": 14.864,
+      "magnitude": 1.1,
+      "origin_time": "2026-10-18T05:53:37.400000Z"
+    },
+    {
+      "depth": 6.3,
+      "event_id": "47566072",
+      "latitude": 37.733,
+      "longitude": 14.867,
+      "magnitude": 1.4,
+      "origin_time": "2026-10-18T05:53:58.820000Z"
+    },
+    {
+      "depth": 3.9,
+      "event_id": "47566402",
+      "latitude": 37.739,
+      "longitude": 14.878,
+      "magnitude": 1.1,
+      "origin_time": "2026-10-18T07:06:10.270000Z"
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-09-02",
-      "detection_count": 3,
-      "detections_available": true
-    },
     {
       "date": "2026-09-03",
       "detection_count": 3,
@@ -1794,6 +1885,11 @@
       "date": "2026-10-17",
       "detection_count": 0,
       "detections_available": true
+    },
+    {
+      "date": "2026-10-18",
+      "detection_count": 0,
+      "detections_available": false
     }
   ]
 }
