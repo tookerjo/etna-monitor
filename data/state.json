@@ -768,21 +768,25 @@
       "eruption_id": "20261028/1100Z",
       "key": "2026/203",
       "published_utc": "2026-10-28T16:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": null,
+      "colour_code": "ORANGE",
+      "eruption_id": "20261028/1100Z",
+      "key": "2026/204",
+      "published_utc": "2026-10-28T22:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": 13000,
+      "colour_code": "RED",
+      "eruption_id": "20261029/0600Z",
+      "key": "2026/205",
+      "published_utc": "2026-10-29T07:14:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-10-24T14:35:12Z",
-  "last_run_utc": "2026-10-28T21:40:27Z",
+  "last_run_utc": "2026-10-29T11:32:50Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-10-05T23:10:24Z"
-    },
     {
       "alerts_emitted": 0,
       "dry_run": false,
@@ -1372,6 +1376,16 @@
         "thermal": true
       },
       "timestamp": "2026-10-28T21:40:27Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-10-29T11:32:50Z"
     }
   ],
   "schema_version": 1,
@@ -1764,11 +1778,6 @@
   ],
   "thermal_daily": [
     {
-      "date": "2026-09-13",
-      "detection_count": 0,
-      "detections_available": true
-    },
-    {
       "date": "2026-09-14",
       "detection_count": 1,
       "detections_available": true
@@ -1990,6 +1999,11 @@
     },
     {
       "date": "2026-10-28",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-10-29",
       "detection_count": 0,
       "detections_available": true
     }
