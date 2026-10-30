@@ -796,21 +796,25 @@
       "eruption_id": "20261029/0600Z",
       "key": "2026/207",
       "published_utc": "2026-10-29T18:53:00Z"
+    },
+    {
+      "ash_ceiling_ft": 13000,
+      "colour_code": "RED",
+      "eruption_id": "20261029/0600Z",
+      "key": "2026/208",
+      "published_utc": "2026-10-30T00:00:00Z"
+    },
+    {
+      "ash_ceiling_ft": 13000,
+      "colour_code": "RED",
+      "eruption_id": "20261029/0600Z",
+      "key": "2026/209",
+      "published_utc": "2026-10-30T06:00:00Z"
     }
   ],
   "last_heartbeat_utc": "2026-10-24T14:35:12Z",
-  "last_run_utc": "2026-10-29T21:49:36Z",
+  "last_run_utc": "2026-10-30T11:25:26Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-10-06T21:39:17Z"
-    },
     {
       "alerts_emitted": 0,
       "dry_run": false,
@@ -1400,6 +1404,16 @@
         "thermal": true
       },
       "timestamp": "2026-10-29T21:49:36Z"
+    },
+    {
+      "alerts_emitted": 1,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-10-30T11:25:26Z"
     }
   ],
   "schema_version": 1,
@@ -1796,14 +1810,17 @@
       "longitude": 15.072,
       "magnitude": 1.2,
       "origin_time": "2026-10-29T14:15:25.780000Z"
+    },
+    {
+      "depth": 5.3,
+      "event_id": "47821732",
+      "latitude": 37.762,
+      "longitude": 15.131,
+      "magnitude": 1.0,
+      "origin_time": "2026-10-30T01:43:31.670000Z"
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-09-14",
-      "detection_count": 1,
-      "detections_available": true
-    },
     {
       "date": "2026-09-15",
       "detection_count": 0,
@@ -2026,6 +2043,11 @@
     },
     {
       "date": "2026-10-29",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-10-30",
       "detection_count": 0,
       "detections_available": true
     }
