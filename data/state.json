@@ -827,18 +827,8 @@
     }
   ],
   "last_heartbeat_utc": "2026-11-07T20:55:04Z",
-  "last_run_utc": "2026-11-08T21:12:03Z",
+  "last_run_utc": "2026-11-09T13:56:34Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-10-15T20:21:25Z"
-    },
     {
       "alerts_emitted": 0,
       "dry_run": false,
@@ -1428,19 +1418,21 @@
         "thermal": true
       },
       "timestamp": "2026-11-08T21:12:03Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-11-09T13:56:34Z"
     }
   ],
   "schema_version": 1,
   "seismic_coverage_start_date": "2026-07-29",
   "seismic_events": [
-    {
-      "depth": 5.3,
-      "event_id": "47241162",
-      "latitude": 37.698,
-      "longitude": 15.078,
-      "magnitude": 1.8,
-      "origin_time": "2026-09-25T05:33:34.480000Z"
-    },
     {
       "depth": 4.8,
       "event_id": "47260392",
@@ -1876,11 +1868,6 @@
   ],
   "thermal_daily": [
     {
-      "date": "2026-09-24",
-      "detection_count": 2,
-      "detections_available": true
-    },
-    {
       "date": "2026-09-25",
       "detection_count": 1,
       "detections_available": true
@@ -2102,6 +2089,11 @@
     },
     {
       "date": "2026-11-08",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-11-09",
       "detection_count": 0,
       "detections_available": true
     }
