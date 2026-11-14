@@ -826,19 +826,9 @@
       "published_utc": "2026-10-30T15:41:00Z"
     }
   ],
-  "last_heartbeat_utc": "2026-11-07T20:55:04Z",
-  "last_run_utc": "2026-11-14T12:13:41Z",
+  "last_heartbeat_utc": "2026-11-14T21:31:32Z",
+  "last_run_utc": "2026-11-14T21:31:32Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-10-19T17:29:51Z"
-    },
     {
       "alerts_emitted": 0,
       "dry_run": false,
@@ -1428,19 +1418,21 @@
         "thermal": true
       },
       "timestamp": "2026-11-14T12:13:41Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-11-14T21:31:32Z"
     }
   ],
   "schema_version": 1,
   "seismic_coverage_start_date": "2026-07-29",
   "seismic_events": [
-    {
-      "depth": 0.1,
-      "event_id": "47440172",
-      "latitude": 37.743,
-      "longitude": 15.004,
-      "magnitude": 1.3,
-      "origin_time": "2026-09-30T15:03:57.180000Z"
-    },
     {
       "depth": 1.1,
       "event_id": "47443202",
@@ -1852,6 +1844,14 @@
     {
       "depth": 4.0,
       "event_id": "47082431",
+      "latitude": 37.737,
+      "longitude": 15.049,
+      "magnitude": 1.0,
+      "origin_time": "2026-11-14T11:51:40.700000Z"
+    },
+    {
+      "depth": 4.0,
+      "event_id": "47940142",
       "latitude": 37.737,
       "longitude": 15.049,
       "magnitude": 1.0,
