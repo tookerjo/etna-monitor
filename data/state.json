@@ -827,18 +827,8 @@
     }
   ],
   "last_heartbeat_utc": "2026-11-14T21:31:32Z",
-  "last_run_utc": "2026-11-20T23:06:18Z",
+  "last_run_utc": "2026-11-21T13:30:04Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-10-24T09:34:51Z"
-    },
     {
       "alerts_emitted": 0,
       "dry_run": false,
@@ -1428,43 +1418,21 @@
         "thermal": true
       },
       "timestamp": "2026-11-20T23:06:18Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-11-21T13:30:04Z"
     }
   ],
   "schema_version": 1,
   "seismic_coverage_start_date": "2026-07-29",
   "seismic_events": [
-    {
-      "depth": 25.0,
-      "event_id": "47459592",
-      "latitude": 37.846,
-      "longitude": 14.943,
-      "magnitude": 1.8,
-      "origin_time": "2026-10-07T00:55:47.340000Z"
-    },
-    {
-      "depth": 25.4,
-      "event_id": "47459642",
-      "latitude": 37.842,
-      "longitude": 14.928,
-      "magnitude": 1.4,
-      "origin_time": "2026-10-07T01:37:07.850000Z"
-    },
-    {
-      "depth": 7.0,
-      "event_id": "47459782",
-      "latitude": 37.807,
-      "longitude": 15.071,
-      "magnitude": 1.1,
-      "origin_time": "2026-10-07T03:38:42.590000Z"
-    },
-    {
-      "depth": 5.5,
-      "event_id": "47460252",
-      "latitude": 37.822,
-      "longitude": 15.084,
-      "magnitude": 1.7,
-      "origin_time": "2026-10-07T05:08:22.540000Z"
-    },
     {
       "depth": 2.7,
       "event_id": "47481672",
@@ -1884,11 +1852,6 @@
   ],
   "thermal_daily": [
     {
-      "date": "2026-10-06",
-      "detection_count": 0,
-      "detections_available": true
-    },
-    {
       "date": "2026-10-07",
       "detection_count": 0,
       "detections_available": true
@@ -2110,6 +2073,11 @@
     },
     {
       "date": "2026-11-20",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-11-21",
       "detection_count": 0,
       "detections_available": true
     }
