@@ -827,18 +827,8 @@
     }
   ],
   "last_heartbeat_utc": "2026-11-21T22:11:28Z",
-  "last_run_utc": "2026-11-22T22:28:58Z",
+  "last_run_utc": "2026-11-23T16:01:32Z",
   "runs": [
-    {
-      "alerts_emitted": 0,
-      "dry_run": false,
-      "sources_reachable": {
-        "advisories": true,
-        "seismic": true,
-        "thermal": true
-      },
-      "timestamp": "2026-10-25T14:57:36Z"
-    },
     {
       "alerts_emitted": 0,
       "dry_run": false,
@@ -1428,6 +1418,16 @@
         "thermal": true
       },
       "timestamp": "2026-11-22T22:28:58Z"
+    },
+    {
+      "alerts_emitted": 0,
+      "dry_run": false,
+      "sources_reachable": {
+        "advisories": true,
+        "seismic": true,
+        "thermal": true
+      },
+      "timestamp": "2026-11-23T16:01:32Z"
     }
   ],
   "schema_version": 1,
@@ -1840,14 +1840,17 @@
       "longitude": 14.997,
       "magnitude": 1.5,
       "origin_time": "2026-11-19T21:54:13.530000Z"
+    },
+    {
+      "depth": 2.6,
+      "event_id": "48053392",
+      "latitude": 37.641,
+      "longitude": 14.895,
+      "magnitude": 1.1,
+      "origin_time": "2026-11-23T03:51:57.020000Z"
     }
   ],
   "thermal_daily": [
-    {
-      "date": "2026-10-08",
-      "detection_count": 0,
-      "detections_available": true
-    },
     {
       "date": "2026-10-09",
       "detection_count": 0,
@@ -2070,6 +2073,11 @@
     },
     {
       "date": "2026-11-22",
+      "detection_count": 0,
+      "detections_available": true
+    },
+    {
+      "date": "2026-11-23",
       "detection_count": 0,
       "detections_available": true
     }
